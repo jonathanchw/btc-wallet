@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
   I18nManager,
+  useWindowDimensions,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useRoute, useNavigation, useTheme, useFocusEffect } from '@react-navigation/native';
@@ -32,9 +33,10 @@ import BlueClipboard from '../../blue_modules/clipboard';
 import TransactionsNavigationHeader from '../../components/TransactionsNavigationHeader';
 import { TransactionListItem } from '../../components/TransactionListItem';
 import alert from '../../components/Alert';
-import DfxButton from '../img/dfx_buttons/btn_dfx.png';
+import DfxButton from '../img/dfx/buttons/open-payment.png';
 import { ImageButton } from '../../components/ImageButton';
 import { useSessionContext } from '../../contexts/session.context';
+import { useWalletContext } from '../../contexts/wallet.context';
 
 const fs = require('../../blue_modules/fs');
 const BlueElectrum = require('../../blue_modules/BlueElectrum');
@@ -46,8 +48,8 @@ const buttonFontSize =
 
 const WalletTransactions = () => {
   const { wallets, saveToDisk, setSelectedWallet, walletTransactionUpdateStatus, isElectrumDisabled } = useContext(BlueStorageContext);
+  const walletID = wallets?.[0].getID();
   const [isLoading, setIsLoading] = useState(false);
-  const { walletID } = useRoute().params;
   const { name } = useRoute();
   const wallet = wallets.find(w => w.getID() === walletID);
   const [itemPriceUnit, setItemPriceUnit] = useState(wallet.getPreferredBalanceUnit());
@@ -59,6 +61,8 @@ const WalletTransactions = () => {
   const { colors } = useTheme();
   const walletActionButtonsRef = useRef();
   const { needsSignUp, openPayment } = useSessionContext();
+  const { discover } = useWalletContext();
+  const { width } = useWindowDimensions();
 
   const stylesHook = StyleSheet.create({
     listHeaderText: {
@@ -111,7 +115,7 @@ const WalletTransactions = () => {
     setDataSource(wallet.getTransactions(15));
     setOptions({
       headerStyle: {
-        backgroundColor: WalletGradient.headerColorFor(wallet.type),
+        backgroundColor: 'transparent',
         borderBottomWidth: 0,
         elevation: 0,
         // shadowRadius: 0,
@@ -125,6 +129,7 @@ const WalletTransactions = () => {
     const newWallet = wallets.find(w => w.getID() === walletID);
     if (newWallet) {
       setParams({ walletID, isLoading: false });
+      discover().catch(console.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletID]);
@@ -438,6 +443,7 @@ const WalletTransactions = () => {
       <StatusBar barStyle="light-content" backgroundColor={WalletGradient.headerColorFor(wallet.type)} animated />
       <TransactionsNavigationHeader
         wallet={wallet}
+        width={width}
         onWalletUnitChange={passedWallet =>
           InteractionManager.runAfterInteractions(async () => {
             setItemPriceUnit(passedWallet.getPreferredBalanceUnit());
@@ -555,12 +561,13 @@ WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, na
     headerRight: () => (
       <TouchableOpacity
         accessibilityRole="button"
-        testID="WalletDetails"
-        disabled={route.params.isLoading === true}
+        testID="Settings"
+        disabled={(route?.params?.isLoading ?? true) === true}
         style={styles.walletDetails}
         onPress={() =>
-          navigation.navigate('WalletDetails', {
-            walletID: route.params.walletID,
+          route?.params?.walletID &&
+          navigation.navigate('Settings', {
+            walletID: route?.params?.walletID,
           })
         }
       >
@@ -569,7 +576,7 @@ WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, na
     ),
     title: '',
     headerStyle: {
-      backgroundColor: WalletGradient.headerColorFor(route.params.walletType),
+      backgroundColor: 'transparent',
       borderBottomWidth: 0,
       elevation: 0,
       // shadowRadius: 0,
@@ -577,6 +584,8 @@ WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, na
     },
     headerTintColor: '#FFFFFF',
     headerBackTitleVisible: false,
+    headerHideBackButton: true,
+    gestureEnabled: false,
   };
 });
 
@@ -636,7 +645,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 16,
     paddingBottom: 16,
-    borderBottomColor: '#202020',
+    borderBottomColor: '#113759',
     borderBottomWidth: 1,
   },
   dfxIcons: {

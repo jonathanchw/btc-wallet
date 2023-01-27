@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackActions, useNavigation, useRoute } from '@react-navigation/native';
 import { BlueStorageContext } from './blue_modules/storage-context';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import { isHandset } from './blue_modules/environment';
 
 const styles = StyleSheet.create({
   root: {
@@ -63,7 +62,7 @@ const UnlockWith = () => {
 
   const successfullyAuthenticated = () => {
     setWalletsInitialized(true);
-    dispatch(StackActions.replace(isHandset ? 'Navigation' : 'DrawerRoot'));
+    dispatch(StackActions.replace('Navigation'));
   };
 
   const unlockWithBiometrics = async () => {
@@ -134,7 +133,7 @@ const UnlockWith = () => {
 
   return (
     <SafeAreaView style={styles.root}>
-      <StatusBar barStyle="default" />
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.container}>
         <View style={styles.splashContainer}>
           <Image style={styles.splash} source={splash} />
