@@ -48,7 +48,7 @@ const buttonFontSize =
 
 const WalletTransactions = () => {
   const { wallets, saveToDisk, setSelectedWallet, walletTransactionUpdateStatus, isElectrumDisabled } = useContext(BlueStorageContext);
-  const walletID = wallets?.[0].getID();
+  const walletID = wallets[0]?.getID();
   const [isLoading, setIsLoading] = useState(false);
   const { name } = useRoute();
   const wallet = wallets.find(w => w.getID() === walletID);
