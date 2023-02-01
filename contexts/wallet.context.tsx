@@ -14,7 +14,7 @@ export function useWalletContext(): WalletInterface {
 }
 
 export function WalletContextProvider(props: PropsWithChildren<any>): JSX.Element {
-  const { wallets, isElectrumDisabled, saveToDisk, sleep } = useContext(BlueStorageContext);
+  const { wallets } = useContext(BlueStorageContext);
   const [address, setAddress] = useState<string>();
 
   function getWallet(): any {
@@ -24,17 +24,7 @@ export function WalletContextProvider(props: PropsWithChildren<any>): JSX.Elemen
   async function discoverAddress(): Promise<string> {
     if (address) return address;
     const wallet = getWallet();
-    let newAddress;
-    try {
-      if (!isElectrumDisabled) newAddress = await Promise.race([wallet.getAddressAsync(), sleep(1000)]);
-    } catch (_) {}
-    if (newAddress === undefined) {
-      console.warn('either sleep expired or getAddressAsync threw an exception');
-      newAddress = wallet._getExternalAddressByIndex(0);
-    } else {
-      await saveToDisk(); // caching whatever getAddressAsync() generated internally
-    }
-    return newAddress;
+    return wallet._getExternalAddressByIndex(0);
   }
 
   async function signMessage(message: string, address: string): Promise<string> {
