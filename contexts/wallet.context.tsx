@@ -30,7 +30,7 @@ export function WalletContextProvider(props: PropsWithChildren<any>): JSX.Elemen
     } catch (_) {}
     if (newAddress === undefined) {
       console.warn('either sleep expired or getAddressAsync threw an exception');
-      newAddress = wallet._getExternalAddressByIndex(wallet.getNextFreeAddressIndex());
+      newAddress = wallet._getExternalAddressByIndex(0);
     } else {
       await saveToDisk(); // caching whatever getAddressAsync() generated internally
     }
