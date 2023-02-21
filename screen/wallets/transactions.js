@@ -127,11 +127,15 @@ const WalletTransactions = () => {
   useEffect(() => {
     const newWallet = wallets.find(w => w.getID() === walletID);
     if (newWallet) {
-      setParams({ walletID, isLoading: false });
+      setParams({
+        walletID,
+        isLoading: false,
+        showsBackupSeed: !newWallet.getUserHasSavedExport() && newWallet.getBalance() > 0,
+      });
       discover().catch(console.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletID]);
+  }, [wallets, wallet, walletID]);
 
   // refresh transactions if it never hasn't been done. It could be a fresh imported wallet
   useEffect(() => {
@@ -144,6 +148,14 @@ const WalletTransactions = () => {
   useEffect(() => {
     if (needsSignUp) navigate('SignUp');
   }, [needsSignUp, navigate]);
+
+  const handleOpenPayment = () => {
+    if (needsSignUp) {
+      navigate('SignUp');
+    } else {
+      openPayment();
+    }
+  };
 
   // if description of transaction has been changed we want to show new one
   useFocusEffect(
@@ -274,6 +286,7 @@ const WalletTransactions = () => {
       });
     }
   };
+
   const navigateToSendScreen = () => {
     navigate('SendDetailsRoot', {
       screen: 'SendDetails',
@@ -478,7 +491,7 @@ const WalletTransactions = () => {
       />
       <View style={styles.dfxButtonContainer}>
         <View style={styles.dfxIcons}>
-          <ImageButton source={DfxButton} onPress={openPayment} />
+          <ImageButton source={DfxButton} onPress={handleOpenPayment} />
         </View>
       </View>
       <View style={[styles.list, stylesHook.list]}>
@@ -557,6 +570,22 @@ export default WalletTransactions;
 
 WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, navigation, route }) => {
   return {
+    headerLeft: () =>
+      route?.params?.showsBackupSeed ? (
+        <TouchableOpacity
+          accessibilityRole="button"
+          testID="backupSeed"
+          style={styles.backupSeed}
+          onPress={() => {
+            navigation.navigate('BackupSeedRoot', { screenName: 'BackupExplanation' });
+          }}
+        >
+          <View style={styles.backupSeedContainer}>
+            <Icon name="warning-outline" type="ionicon" size={18} color="#072440" />
+            <Text style={styles.backupSeedText}>{loc.wallets.backupSeed}</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null,
     headerRight: () => (
       <TouchableOpacity
         accessibilityRole="button"
@@ -601,6 +630,22 @@ const styles = StyleSheet.create({
   walletDetails: {
     justifyContent: 'center',
     alignItems: 'flex-end',
+  },
+  backupSeed: {
+    height: 34,
+    padding: 8,
+    backgroundColor: '#FFF389',
+    borderRadius: 8,
+  },
+  backupSeedContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  backupSeedText: {
+    marginLeft: 4,
+    color: '#072440',
+    fontWeight: '600',
+    fontSize: 14,
   },
   activityIndicator: {
     marginVertical: 20,
