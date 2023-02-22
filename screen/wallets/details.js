@@ -35,7 +35,7 @@ import {
   LightningLdkWallet,
 } from '../../class';
 import loc, { formatBalanceWithoutSuffix } from '../../loc';
-import { useTheme, useRoute, useNavigation } from '@react-navigation/native';
+import { useTheme, useRoute, useNavigation, StackActions } from '@react-navigation/native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
@@ -45,6 +45,7 @@ import { AbstractHDElectrumWallet } from '../../class/wallets/abstract-hd-electr
 import alert from '../../components/Alert';
 import { BitcoinUnit, Chain } from '../../models/bitcoinUnits';
 import { writeFileAndExport } from '../../blue_modules/fs';
+import { useSessionContext } from '../../contexts/session.context';
 
 const prompt = require('../../helpers/prompt');
 
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
 
 const WalletDetails = () => {
   const { saveToDisk, wallets, deleteWallet, setSelectedWallet, txMetadata } = useContext(BlueStorageContext);
+  const { logout } = useSessionContext();
   const { walletID } = useRoute().params;
   const [isLoading, setIsLoading] = useState(false);
   const [backdoorPressed, setBackdoorPressed] = useState(0);
@@ -129,7 +131,7 @@ const WalletDetails = () => {
   const { isAdancedModeEnabled } = useContext(BlueStorageContext);
   const [isAdvancedModeEnabledRender, setIsAdvancedModeEnabledRender] = useState(false);
   const [hideTransactionsInWalletsList, setHideTransactionsInWalletsList] = useState(!wallet.getHideTransactionsInWalletsList());
-  const { goBack, navigate, setOptions, popToTop } = useNavigation();
+  const { goBack, navigate, setOptions, dispatch } = useNavigation();
   const { colors } = useTheme();
   const [masterFingerprint, setMasterFingerprint] = useState();
   const walletTransactionsLength = useMemo(() => wallet.getTransactions().length, [wallet]);
@@ -228,9 +230,10 @@ const WalletDetails = () => {
   const navigateToOverviewAndDeleteWallet = () => {
     setIsLoading(true);
     Notifications.unsubscribe(wallet.getAllExternalAddresses(), [], []);
-    popToTop();
+    dispatch(StackActions.replace('AddWalletRoot'));
     deleteWallet(wallet);
     saveToDisk(true);
+    logout();
     ReactNativeHapticFeedback.trigger('notificationSuccess', { ignoreAndroidSystemSettings: false });
   };
 
