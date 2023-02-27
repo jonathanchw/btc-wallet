@@ -15,12 +15,12 @@ import {
   TouchableOpacity,
   View,
   I18nManager,
+  useWindowDimensions,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useRoute, useNavigation, useTheme, useFocusEffect } from '@react-navigation/native';
 import { Chain } from '../../models/bitcoinUnits';
 import { BlueAlertWalletExportReminder } from '../../BlueComponents';
-import WalletGradient from '../../class/wallet-gradient';
 import navigationStyle from '../../components/navigationStyle';
 import { LightningCustodianWallet, LightningLdkWallet, MultisigHDWallet, WatchOnlyWallet } from '../../class';
 import ActionSheet from '../ActionSheet';
@@ -29,10 +29,13 @@ import { FContainer, FButton } from '../../components/FloatButtons';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
 import { isDesktop, isMacCatalina } from '../../blue_modules/environment';
 import BlueClipboard from '../../blue_modules/clipboard';
-import LNNodeBar from '../../components/LNNodeBar';
 import TransactionsNavigationHeader from '../../components/TransactionsNavigationHeader';
 import { TransactionListItem } from '../../components/TransactionListItem';
 import alert from '../../components/Alert';
+import DfxButton from '../img/dfx/buttons/open-payment.png';
+import { ImageButton } from '../../components/ImageButton';
+import { useSessionContext } from '../../contexts/session.context';
+import { useWalletContext } from '../../contexts/wallet.context';
 
 const fs = require('../../blue_modules/fs');
 const BlueElectrum = require('../../blue_modules/BlueElectrum');
@@ -44,8 +47,8 @@ const buttonFontSize =
 
 const WalletTransactions = () => {
   const { wallets, saveToDisk, setSelectedWallet, walletTransactionUpdateStatus, isElectrumDisabled } = useContext(BlueStorageContext);
+  const walletID = wallets[0]?.getID();
   const [isLoading, setIsLoading] = useState(false);
-  const { walletID } = useRoute().params;
   const { name } = useRoute();
   const wallet = wallets.find(w => w.getID() === walletID);
   const [itemPriceUnit, setItemPriceUnit] = useState(wallet.getPreferredBalanceUnit());
@@ -55,18 +58,14 @@ const WalletTransactions = () => {
   const [pageSize, setPageSize] = useState(20);
   const { setParams, setOptions, navigate } = useNavigation();
   const { colors } = useTheme();
-  const [lnNodeInfo, setLnNodeInfo] = useState({ canReceive: 0, canSend: 0 });
   const walletActionButtonsRef = useRef();
+  const { needsSignUp, openPayment } = useSessionContext();
+  const { discover } = useWalletContext();
+  const { width } = useWindowDimensions();
 
   const stylesHook = StyleSheet.create({
     listHeaderText: {
       color: colors.foregroundColor,
-    },
-    browserButton2: {
-      backgroundColor: colors.lightButton,
-    },
-    marketpalceText1: {
-      color: colors.cta2,
     },
     list: {
       backgroundColor: colors.background,
@@ -115,7 +114,7 @@ const WalletTransactions = () => {
     setDataSource(wallet.getTransactions(15));
     setOptions({
       headerStyle: {
-        backgroundColor: WalletGradient.headerColorFor(wallet.type),
+        backgroundColor: 'transparent',
         borderBottomWidth: 0,
         elevation: 0,
         // shadowRadius: 0,
@@ -128,19 +127,35 @@ const WalletTransactions = () => {
   useEffect(() => {
     const newWallet = wallets.find(w => w.getID() === walletID);
     if (newWallet) {
-      setParams({ walletID, isLoading: false });
+      setParams({
+        walletID,
+        isLoading: false,
+        showsBackupSeed: !newWallet.getUserHasBackedUpSeed() && newWallet.getBalance() > 0,
+      });
+      discover().catch(console.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletID]);
+  }, [wallets, wallet, walletID]);
 
   // refresh transactions if it never hasn't been done. It could be a fresh imported wallet
   useEffect(() => {
     if (wallet.getLastTxFetch() === 0) {
       refreshTransactions();
     }
-    refreshLnNodeInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (needsSignUp) navigate('SignUp');
+  }, [needsSignUp, navigate]);
+
+  const handleOpenPayment = () => {
+    if (needsSignUp) {
+      navigate('SignUp');
+    } else {
+      openPayment();
+    }
+  };
 
   // if description of transaction has been changed we want to show new one
   useFocusEffect(
@@ -158,12 +173,6 @@ const WalletTransactions = () => {
     return false;
   };
 
-  const refreshLnNodeInfo = () => {
-    if (wallet.type === LightningLdkWallet.type) {
-      setLnNodeInfo({ canReceive: wallet.getReceivableBalance(), canSend: wallet.getBalance() });
-    }
-  };
-
   /**
    * Forcefully fetches TXs and balance for wallet
    */
@@ -174,7 +183,6 @@ const WalletTransactions = () => {
     let noErr = true;
     let smthChanged = false;
     try {
-      refreshLnNodeInfo();
       // await BlueElectrum.ping();
       await BlueElectrum.waitTillConnected();
       /** @type {LegacyWallet} */
@@ -233,12 +241,6 @@ const WalletTransactions = () => {
 
     return (
       <View style={styles.flex}>
-        <View style={styles.listHeader}>{wallet.chain === Chain.OFFCHAIN && renderLappBrowserButton()}</View>
-        {wallet.type === LightningLdkWallet.type && (lnNodeInfo.canSend > 0 || lnNodeInfo.canReceive > 0) && (
-          <View style={[styles.marginHorizontal18, styles.marginBottom18]}>
-            <LNNodeBar canSend={lnNodeInfo.canSend} canReceive={lnNodeInfo.canReceive} itemPriceUnit={itemPriceUnit} />
-          </View>
-        )}
         <View style={styles.listHeaderTextRow}>
           <Text style={[styles.listHeaderText, stylesHook.listHeaderText]}>{loc.transactions.list_title}</Text>
           <TouchableOpacity
@@ -252,26 +254,6 @@ const WalletTransactions = () => {
           </TouchableOpacity>
         </View>
       </View>
-    );
-  };
-
-  const renderLappBrowserButton = () => {
-    return (
-      <TouchableOpacity
-        accessibilityRole="button"
-        onPress={() => {
-          navigate('LappBrowserRoot', {
-            screen: 'LappBrowser',
-            params: {
-              walletID,
-              url: 'https://duckduckgo.com',
-            },
-          });
-        }}
-        style={[styles.browserButton2, stylesHook.browserButton2]}
-      >
-        <Text style={[styles.marketpalceText1, stylesHook.marketpalceText1]}>{loc.wallets.list_ln_browser}</Text>
-      </TouchableOpacity>
     );
   };
 
@@ -304,6 +286,7 @@ const WalletTransactions = () => {
       });
     }
   };
+
   const navigateToSendScreen = () => {
     navigate('SendDetailsRoot', {
       screen: 'SendDetails',
@@ -469,9 +452,10 @@ const WalletTransactions = () => {
 
   return (
     <View style={styles.flex}>
-      <StatusBar barStyle="light-content" backgroundColor={WalletGradient.headerColorFor(wallet.type)} animated />
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent animated />
       <TransactionsNavigationHeader
         wallet={wallet}
+        width={width}
         onWalletUnitChange={passedWallet =>
           InteractionManager.runAfterInteractions(async () => {
             setItemPriceUnit(passedWallet.getPreferredBalanceUnit());
@@ -505,6 +489,11 @@ const WalletTransactions = () => {
           }
         }}
       />
+      <View style={styles.dfxButtonContainer}>
+        <View style={styles.dfxIcons}>
+          <ImageButton source={DfxButton} onPress={handleOpenPayment} />
+        </View>
+      </View>
       <View style={[styles.list, stylesHook.list]}>
         <FlatList
           ListHeaderComponent={renderListHeaderComponent}
@@ -581,15 +570,32 @@ export default WalletTransactions;
 
 WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, navigation, route }) => {
   return {
+    headerLeft: () =>
+      route?.params?.showsBackupSeed ? (
+        <TouchableOpacity
+          accessibilityRole="button"
+          testID="backupSeed"
+          style={styles.backupSeed}
+          onPress={() => {
+            navigation.navigate('BackupSeedRoot', { screenName: 'BackupExplanation' });
+          }}
+        >
+          <View style={styles.backupSeedContainer}>
+            <Icon name="warning-outline" type="ionicon" size={18} color="#072440" />
+            <Text style={styles.backupSeedText}>{loc.wallets.backupSeed}</Text>
+          </View>
+        </TouchableOpacity>
+      ) : null,
     headerRight: () => (
       <TouchableOpacity
         accessibilityRole="button"
-        testID="WalletDetails"
-        disabled={route.params.isLoading === true}
+        testID="Settings"
+        disabled={(route?.params?.isLoading ?? true) === true}
         style={styles.walletDetails}
         onPress={() =>
-          navigation.navigate('WalletDetails', {
-            walletID: route.params.walletID,
+          route?.params?.walletID &&
+          navigation.navigate('Settings', {
+            walletID: route?.params?.walletID,
           })
         }
       >
@@ -598,7 +604,7 @@ WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, na
     ),
     title: '',
     headerStyle: {
-      backgroundColor: WalletGradient.headerColorFor(route.params.walletType),
+      backgroundColor: 'transparent',
       borderBottomWidth: 0,
       elevation: 0,
       // shadowRadius: 0,
@@ -606,6 +612,8 @@ WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, na
     },
     headerTintColor: '#FFFFFF',
     headerBackTitleVisible: false,
+    headerHideBackButton: true,
+    gestureEnabled: false,
   };
 });
 
@@ -619,29 +627,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 40,
   },
-  marginHorizontal18: {
-    marginHorizontal: 18,
-  },
-  marginBottom18: {
-    marginBottom: 18,
-  },
   walletDetails: {
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
+  backupSeed: {
+    height: 34,
+    padding: 8,
+    backgroundColor: '#FFF389',
+    borderRadius: 8,
+  },
+  backupSeedContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  backupSeedText: {
+    marginLeft: 4,
+    color: '#072440',
+    fontWeight: '600',
+    fontSize: 14,
+  },
   activityIndicator: {
     marginVertical: 20,
   },
-  listHeader: {
-    marginLeft: 16,
-    marginRight: 16,
-    marginVertical: 16,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
   listHeaderTextRow: {
     flex: 1,
+    marginTop: 12,
     marginHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -651,20 +662,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: 'bold',
     fontSize: 24,
-  },
-  browserButton2: {
-    borderRadius: 9,
-    minHeight: 49,
-    paddingHorizontal: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    alignSelf: 'auto',
-    flexGrow: 1,
-    marginHorizontal: 4,
-  },
-  marketpalceText1: {
-    fontSize: 18,
   },
   list: {
     flex: 1,
@@ -686,5 +683,16 @@ const styles = StyleSheet.create({
   },
   receiveIcon: {
     transform: [{ rotate: I18nManager.isRTL ? '45deg' : '-45deg' }],
+  },
+  dfxButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderBottomColor: '#113759',
+    borderBottomWidth: 1,
+  },
+  dfxIcons: {
+    height: 67,
   },
 });

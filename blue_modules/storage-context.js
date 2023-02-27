@@ -6,7 +6,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { FiatUnit } from '../models/fiatUnit';
 import Notifications from '../blue_modules/notifications';
 import loc, { STORAGE_KEY as LOC_STORAGE_KEY } from '../loc';
-import { LegacyWallet, WatchOnlyWallet } from '../class';
+import { WatchOnlyWallet } from '../class';
 import { isTorDaemonDisabled, setIsTorDaemonDisabled } from './environment';
 import alert from '../components/Alert';
 const BlueApp = require('../BlueApp');
@@ -183,10 +183,9 @@ export const BlueStorageProvider = ({ children }) => {
       Alert.alert('', 'This wallet has been previously imported.');
       return;
     }
-    const emptyWalletLabel = new LegacyWallet().getLabel();
     ReactNativeHapticFeedback.trigger('notificationSuccess', { ignoreAndroidSystemSettings: false });
-    if (w.getLabel() === emptyWalletLabel) w.setLabel(loc.wallets.import_imported + ' ' + w.typeReadable);
     w.setUserHasSavedExport(true);
+    w.setUserHasBackedUpSeed(true);
     addWallet(w);
     await saveToDisk();
     A(A.ENUM.CREATED_WALLET);

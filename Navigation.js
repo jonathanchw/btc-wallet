@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Platform, useWindowDimensions, Dimensions, I18nManager } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 import Settings from './screen/settings/settings';
@@ -22,7 +20,6 @@ import NetworkSettings from './screen/settings/NetworkSettings';
 import NotificationSettings from './screen/settings/notificationSettings';
 import DefaultView from './screen/settings/defaultView';
 
-import WalletsList from './screen/wallets/list';
 import WalletTransactions from './screen/wallets/transactions';
 import AddWallet from './screen/wallets/add';
 import WalletsAddMultisig from './screen/wallets/addMultisig';
@@ -78,11 +75,13 @@ import LnurlPay from './screen/lnd/lnurlPay';
 import LnurlPaySuccess from './screen/lnd/lnurlPaySuccess';
 import LnurlAuth from './screen/lnd/lnurlAuth';
 import UnlockWith from './UnlockWith';
-import DrawerList from './screen/wallets/drawerList';
-import { isDesktop, isTablet, isHandset } from './blue_modules/environment';
+import { isDesktop } from './blue_modules/environment';
 import SettingsPrivacy from './screen/settings/SettingsPrivacy';
 import LNDViewAdditionalInvoicePreImage from './screen/lnd/lndViewAdditionalInvoicePreImage';
 import LdkViewLogs from './screen/wallets/ldkViewLogs';
+import SignUp from './screen/wallets/dfx/sign-up';
+import BackupExplanation from './screen/wallets/dfx/backup-explanation';
+import { BlueStorageContext } from './blue_modules/storage-context';
 
 const WalletsStack = createNativeStackNavigator();
 
@@ -91,11 +90,11 @@ const WalletsRoot = () => {
 
   return (
     <WalletsStack.Navigator screenOptions={{ headerHideShadow: true }}>
-      <WalletsStack.Screen name="WalletsList" component={WalletsList} options={WalletsList.navigationOptions(theme)} />
       <WalletsStack.Screen name="WalletTransactions" component={WalletTransactions} options={WalletTransactions.navigationOptions(theme)} />
       <WalletsStack.Screen name="LdkOpenChannel" component={LdkOpenChannel} options={LdkOpenChannel.navigationOptions(theme)} />
       <WalletsStack.Screen name="LdkInfo" component={LdkInfo} options={LdkInfo.navigationOptions(theme)} />
       <WalletsStack.Screen name="WalletDetails" component={WalletDetails} options={WalletDetails.navigationOptions(theme)} />
+      <WalletsStack.Screen name="SignUp" component={SignUp} options={SignUp.navigationOptions(theme)} />
       <WalletsStack.Screen name="LdkViewLogs" component={LdkViewLogs} options={LdkViewLogs.navigationOptions(theme)} />
       <WalletsStack.Screen name="TransactionDetails" component={TransactionDetails} options={TransactionDetails.navigationOptions(theme)} />
       <WalletsStack.Screen name="TransactionStatus" component={TransactionStatus} options={TransactionStatus.navigationOptions(theme)} />
@@ -155,6 +154,17 @@ const WalletsRoot = () => {
       />
       <WalletsStack.Screen name="WalletAddresses" component={WalletAddresses} options={WalletAddresses.navigationOptions(theme)} />
     </WalletsStack.Navigator>
+  );
+};
+
+const BackupSeedStack = createNativeStackNavigator();
+const BackupSeedRoot = () => {
+  const theme = useTheme();
+  return (
+    <BackupSeedStack.Navigator screenOptions={{ headerHideShadow: true }}>
+      <BackupSeedStack.Screen name="BackupExplanation" component={BackupExplanation} options={BackupExplanation.navigationOptions(theme)} />
+      <BackupSeedStack.Screen name="PleaseBackup" component={PleaseBackup} options={PleaseBackup.navigationOptions(theme)} />
+    </BackupSeedStack.Navigator>
   );
 };
 
@@ -336,25 +346,6 @@ const ReorderWalletsStackRoot = () => {
   );
 };
 
-const Drawer = createDrawerNavigator();
-function DrawerRoot() {
-  const dimensions = useWindowDimensions();
-  const isLargeScreen =
-    Platform.OS === 'android' ? isTablet() : (dimensions.width >= Dimensions.get('screen').width / 2 && isTablet()) || isDesktop;
-  const drawerStyle = { width: isLargeScreen ? 320 : '0%' };
-
-  return (
-    <Drawer.Navigator
-      drawerStyle={drawerStyle}
-      drawerType={isLargeScreen ? 'permanent' : null}
-      drawerContent={props => (isLargeScreen ? <DrawerList {...props} /> : null)}
-      drawerPosition={I18nManager.isRTL ? 'right' : 'left'}
-    >
-      <Drawer.Screen name="Navigation" component={Navigation} options={{ headerShown: false, gestureEnabled: false }} />
-    </Drawer.Navigator>
-  );
-}
-
 const ReceiveDetailsStack = createNativeStackNavigator();
 const ReceiveDetailsStackRoot = () => {
   const theme = useTheme();
@@ -419,11 +410,7 @@ const InitRoot = () => (
       component={ReorderWalletsStackRoot}
       options={{ headerShown: false, gestureEnabled: false, stackPresentation: isDesktop ? 'containedModal' : 'modal' }}
     />
-    <InitStack.Screen
-      name={isHandset ? 'Navigation' : 'DrawerRoot'}
-      component={isHandset ? Navigation : DrawerRoot}
-      options={{ headerShown: false, replaceAnimation: 'push' }}
-    />
+    <InitStack.Screen name="Navigation" component={Navigation} options={{ headerShown: false, replaceAnimation: 'push' }} />
   </InitStack.Navigator>
 );
 
@@ -468,11 +455,16 @@ const ExportMultisigCoordinationSetupRoot = () => {
 const RootStack = createNativeStackNavigator();
 const NavigationDefaultOptions = { headerShown: false, stackPresentation: isDesktop ? 'containedModal' : 'modal' };
 const Navigation = () => {
+  const { wallets } = useContext(BlueStorageContext);
   return (
-    <RootStack.Navigator initialRouteName="UnlockWithScreenRoot" screenOptions={{ headerHideShadow: true }}>
+    <RootStack.Navigator
+      initialRouteName={wallets.length === 0 ? 'AddWalletRoot' : 'WalletsRoot'}
+      screenOptions={{ headerHideShadow: true }}
+    >
       {/* stacks */}
       <RootStack.Screen name="WalletsRoot" component={WalletsRoot} options={{ headerShown: false, translucent: false }} />
-      <RootStack.Screen name="AddWalletRoot" component={AddWalletRoot} options={NavigationDefaultOptions} />
+      <RootStack.Screen name="BackupSeedRoot" component={BackupSeedRoot} options={NavigationDefaultOptions} />
+      <RootStack.Screen name="AddWalletRoot" component={AddWalletRoot} options={{ headerShown: false, translucent: false }} />
       <RootStack.Screen name="SendDetailsRoot" component={SendDetailsRoot} options={NavigationDefaultOptions} />
       <RootStack.Screen name="LNDCreateInvoiceRoot" component={LNDCreateInvoiceRoot} options={NavigationDefaultOptions} />
       <RootStack.Screen name="ScanLndInvoiceRoot" component={ScanLndInvoiceRoot} options={NavigationDefaultOptions} />

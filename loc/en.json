@@ -16,7 +16,7 @@
     "seed": "Seed",
     "success": "Success",
     "wallet_key": "Wallet key",
-    "invalid_animated_qr_code_fragment" : "Invalid animated QRCode fragment. Please try again.",
+    "invalid_animated_qr_code_fragment": "Invalid animated QRCode fragment. Please try again.",
     "file_saved": "File {filePath} has been saved in your {destination}.",
     "downloads_folder": "Downloads Folder"
   },
@@ -43,13 +43,13 @@
     "network": "Network Error"
   },
   "lnd": {
-    "active":"Active",
-    "inactive":"Inactive",
+    "active": "Active",
+    "inactive": "Inactive",
     "channels": "Channels",
     "no_channels": "No channels",
     "claim_balance": "Claim balance {balance}",
     "close_channel": "Close channel",
-    "new_channel" : "New channel",
+    "new_channel": "New channel",
     "errorInvoiceExpired": "Invoice expired",
     "force_close_channel": "Force close channel?",
     "expired": "Expired",
@@ -59,7 +59,7 @@
     "placeholder": "Invoice",
     "open_channel": "Open Channel",
     "funding_amount_placeholder": "Funding amount, for example 0.001",
-    "opening_channnel_for_from":"Opening channel for wallet {forWalletLabel}, by funding from {fromWalletLabel}",
+    "opening_channnel_for_from": "Opening channel for wallet {forWalletLabel}, by funding from {fromWalletLabel}",
     "are_you_sure_open_channel": "Are you sure you want to open this channel?",
     "potentialFee": "Potential Fee: {fee}",
     "remote_host": "Remote host",
@@ -89,13 +89,33 @@
     "create_fake_storage": "Create Encrypted Storage",
     "create_password": "Create a password",
     "create_password_explanation": "Password for the fake storage should not match the password for your main storage.",
-    "help": "Under certain circumstances, you might be forced to disclose a password. To keep your coins safe, BlueWallet can create another encrypted storage with a different password. Under pressure, you may disclose this password to a third party. If entered in BlueWallet, it will unlock a new “fake” storage. This will seem legit to the third party, but it will secretly keep your main storage with coins safe.",
+    "help": "Under certain circumstances, you might be forced to disclose a password. To keep your coins safe, DFX Bitcoin Wallet can create another encrypted storage with a different password. Under pressure, you may disclose this password to a third party. If entered in DFX Bitcoin Wallet, it will unlock a new “fake” storage. This will seem legit to the third party, but it will secretly keep your main storage with coins safe.",
     "help2": "The new storage will be fully functional, and you can store some minimum amounts there so that it looks more believable.",
     "password_should_not_match": "Password is currently in use. Please try a different password.",
     "passwords_do_not_match": "Passwords do not match. Please try again.",
     "retype_password": "Re-type password",
     "success": "Success",
     "title": "Plausible Deniability"
+  },
+  "backupExplanation": {
+    "title": "Backup phrase",
+    "subtitle": "Recovery phrase backup",
+    "text": "Find a safe and private place. Set a pen and some paper to write down your recovery phrase.",
+    "items": [
+      {
+        "title": "Secret words",
+        "text": "Your recovery phrase is a list of 12 secret words in a predefined order that back up your private key."
+      },
+      {
+        "title": "Unrestorable",
+        "text": "if you lose your recovery phrase, you will de unable to access your funds, as nobody will be able to restore it."
+      },
+      {
+        "title": "Only Chance",
+        "text": "This phrase is your only chance to recover access to your funds if your DFX Bitcoin App or usual device is unavailable for you."
+      }
+    ],
+    "ready": "Ready"
   },
   "pleasebackup": {
     "ask": "Have you saved your wallet’s backup phrase? This backup phrase is required to access your funds in case you lose this device. Without the backup phrase, your funds will be permanently lost.",
@@ -105,7 +125,11 @@
     "ok_lnd": "OK, I have saved it",
     "text": "Please take a moment to write down this mnemonic phrase on a piece of paper.\nIt’s your backup and you can use it to recover the wallet.",
     "text_lnd": "Please save this wallet backup. It allows you to restore the wallet in case of loss.",
-    "title": "Your wallet has been created"
+    "title": "Backup phrase",
+    "subtitle": "Your Recovery phrase",
+    "info": "Never share recovery phrase with anyone, store it securely!",
+    "description": "Write down these words in the right order and save them somewhere safe.",
+    "confirm": "I understand that if I lose my recovery phrase, I will not be able to access my funds."
   },
   "receive": {
     "details_create": "Create",
@@ -186,8 +210,8 @@
     "psbt_sign": "Sign a transaction",
     "open_settings": "Open Settings",
     "permission_storage_later": "Ask me later",
-    "permission_storage_message": "BlueWallet needs your permission to access your storage to save this file.",
-    "permission_storage_denied_message": "BlueWallet is unable to save this file. Please open your device settings and enable Storage Permission.",
+    "permission_storage_message": "DFX Bitcoin Wallet needs your permission to access your storage to save this file.",
+    "permission_storage_denied_message": "DFX Bitcoin Wallet is unable to save this file. Please open your device settings and enable Storage Permission.",
     "permission_storage_title": "Storage Access Permission",
     "psbt_clipboard": "Copy to Clipboard",
     "psbt_this_is_psbt": "This is a Partially Signed Bitcoin Transaction (PSBT). Please finish signing it with your hardware wallet.",
@@ -207,7 +231,7 @@
     "about": "About",
     "about_awesome": "Built with the awesome",
     "about_backup": "Always backup your keys!",
-    "about_free": "BlueWallet is a free and open-source project. Crafted by Bitcoin users.",
+    "about_free": "The DFX Bitcoin-only Wallet is a softfork from bluewallet.io with an integrated buy and sell option from DFX AG.",
     "about_license": "MIT License",
     "about_release_notes": "Release notes",
     "about_review": "Leave us a review",
@@ -229,7 +253,7 @@
     "currency": "Currency",
     "currency_source": "Price is obtained from",
     "currency_fetch_error": "There was an error while obtaining the rate for the selected currency.",
-    "default_desc": "When disabled, BlueWallet will immediately open the selected wallet at launch.",
+    "default_desc": "When disabled, DFX Bitcoin Wallet will immediately open the selected wallet at launch.",
     "default_info": "Default info",
     "default_title": "On Launch",
     "default_wallets": "View All Wallets",
@@ -242,7 +266,7 @@
     "electrum_offline_description": "When enabled, your Bitcoin wallets will not attempt to fetch balances or transactions.",
     "electrum_port": "Port, usually {example}",
     "use_ssl": "Use SSL",
-    "electrum_saved": "Your changes have been saved successfully. Restarting BlueWallet may be required for the changes to take effect.",
+    "electrum_saved": "Your changes have been saved successfully. Restarting DFX Bitcoin Wallet may be required for the changes to take effect.",
     "set_electrum_server_as_default": "Set {server} as the default Electrum server?",
     "set_lndhub_as_default": "Set {url} as the default LNDHub server?",
     "electrum_settings_server": "Electrum Server",
@@ -272,22 +296,22 @@
     "general_adv_mode_e": "When enabled, you will see advanced options such as different wallet types, the ability to specify the LNDHub instance you wish to connect to, and custom entropy during wallet creation.",
     "general_continuity": "Continuity",
     "general_continuity_e": "When enabled, you will be able to view selected wallets, and transactions, using your other Apple iCloud connected devices.",
-    "groundcontrol_explanation": "GroundControl is a free, open-source push notifications server for Bitcoin wallets. You can install your own GroundControl server and put its URL here to not rely on BlueWallet’s infrastructure. Leave blank to use GroundControl’s default server.",
+    "groundcontrol_explanation": "GroundControl is a free, open-source push notifications server for Bitcoin wallets. You can install your own GroundControl server and put its URL here to not rely on DFX Bitcoin Wallet’s infrastructure. Leave blank to use GroundControl’s default server.",
     "header": "Settings",
     "language": "Language",
     "last_updated": "Last Updated",
-    "language_isRTL": "Restarting BlueWallet is required for the language orientation to take effect.",
+    "language_isRTL": "Restarting DFX Bitcoin Wallet is required for the language orientation to take effect.",
     "lightning_error_lndhub_uri": "Invalid LNDHub URI",
     "lightning_saved": "Your changes have been saved successfully.",
     "lightning_settings": "Lightning Settings",
     "tor_settings": "Tor Settings",
-    "lightning_settings_explain": "To connect to your own LND node, please install LNDHub and put its URL here in settings. Leave blank to use BlueWallet’s LNDHub (lndhub.io). Please note that only wallets created after saving changes will connect to the specified LNDHub.",
+    "lightning_settings_explain": "To connect to your own LND node, please install LNDHub and put its URL here in settings. Leave blank to use DFX Bitcoin Wallet’s LNDHub (lndhub.io). Please note that only wallets created after saving changes will connect to the specified LNDHub.",
     "network": "Network",
     "network_broadcast": "Broadcast Transaction",
     "network_electrum": "Electrum Server",
     "not_a_valid_uri": "Invalid URI",
     "notifications": "Notifications",
-    "open_link_in_explorer" : "Open link in explorer",
+    "open_link_in_explorer": "Open link in explorer",
     "password": "Password",
     "password_explain": "Create the password you will use to decrypt the storage.",
     "passwords_do_not_match": "Passwords do not match.",
@@ -296,7 +320,7 @@
     "privacy_read_clipboard": "Read Clipboard",
     "privacy_system_settings": "System Settings",
     "privacy_quickactions": "Wallet Shortcuts",
-    "privacy_quickactions_explanation": "Touch and hold the BlueWallet app icon on your Home Screen to quickly view your wallet’s balance.",
+    "privacy_quickactions_explanation": "Touch and hold the DFX Bitcoin Wallet app icon on your Home Screen to quickly view your wallet’s balance.",
     "privacy_clipboard_explanation": "Provide shortcuts if an address or invoice is found in your clipboard.",
     "privacy_do_not_track": "Disable Analytics",
     "privacy_do_not_track_explanation": "Performance and reliability information will not be submitted for analysis.",
@@ -306,7 +330,7 @@
     "selfTest": "Self-Test",
     "save": "Save",
     "saved": "Saved",
-    "success_transaction_broadcasted" : "Success! Your transaction has been broadcasted!",
+    "success_transaction_broadcasted": "Success! Your transaction has been broadcasted!",
     "total_balance": "Total Balance",
     "total_balance_explanation": "Display the total balance of all your wallets on your home screen widgets.",
     "widgets": "Widgets",
@@ -414,7 +438,7 @@
     "import_passphrase_title": "Passphrase",
     "import_passphrase_message": "Enter passphrase if you have used any",
     "import_error": "Failed to import. Please make sure that the provided data is valid.",
-    "import_explanation": "Please enter your seed words, public key, WIF, or anything you’ve got. BlueWallet will do its best to guess the correct format and import your wallet.",
+    "import_explanation": "Please enter your seed words, public key, WIF, or anything you’ve got. DFX Bitcoin Wallet will do its best to guess the correct format and import your wallet.",
     "import_file": "Import File",
     "import_imported": "Imported",
     "import_scan_qr": "Scan or import a file",
@@ -461,7 +485,8 @@
     "warning_do_not_disclose": "Warning! Do not disclose.",
     "add_ln_wallet_first": "You must first add a Lightning wallet.",
     "identity_pubkey": "Identity Pubkey",
-    "xpub_title": "Wallet XPUB"
+    "xpub_title": "Wallet XPUB",
+    "backupSeed": "Backup not verified"
   },
   "multisig": {
     "multisig_vault": "Vault",
@@ -477,7 +502,7 @@
     "share": "Share",
     "view": "View",
     "manage_keys": "Manage Keys",
-    "how_many_signatures_can_bluewallet_make": "how many signatures can BlueWallet make",
+    "how_many_signatures_can_bluewallet_make": "how many signatures can DFX Bitcoin Wallet make",
     "signatures_required_to_spend": "Signatures required {number}",
     "signatures_we_can_make": "can make {number}",
     "scan_or_import_file": "Scan or import file",
@@ -524,7 +549,7 @@
     "ms_help_title": "How Multisig Vaults Work: Tips and Tricks",
     "ms_help_text": "A wallet with multiple keys, for increased security or shared custody",
     "ms_help_title1": "Multiple devices are advised.",
-    "ms_help_1": "The Vault will work with other BlueWallet apps and PSBT compatible wallets, such as Electrum, Specter, Coldcard, Cobo Vault, etc.",
+    "ms_help_1": "The Vault will work with other DFX Bitcoin Wallet apps and PSBT compatible wallets, such as Electrum, Specter, Coldcard, Cobo Vault, etc.",
     "ms_help_title2": "Editing Keys",
     "ms_help_2": "You can create all Vault keys in this device and remove or edit them later. Having all keys on the same device has the equivalent security of a regular Bitcoin wallet.",
     "ms_help_title3": "Vault Backups",
@@ -532,7 +557,7 @@
     "ms_help_title4": "Importing Vaults",
     "ms_help_4": "To import a multisig, use your backup file and the Import feature. If you only have seeds and XPUBs, you can use the individual Import button when creating Vault keys.",
     "ms_help_title5": "Advanced Mode",
-    "ms_help_5": "By default, BlueWallet will generate a 2-of-3 Vault. To create a different quorum or change the address type, activate Advanced Mode in the Settings."
+    "ms_help_5": "By default, DFX Bitcoin Wallet will generate a 2-of-3 Vault. To create a different quorum or change the address type, activate Advanced Mode in the Settings."
   },
   "is_it_my_address": {
     "title": "Is it my address?",
@@ -592,5 +617,12 @@
     "auth_answer": "You have successfully authenticated at {hostname}!",
     "could_not_auth": "We couldn’t authenticate you to {hostname}.",
     "authenticate": "Authenticate"
+  },
+  "signUp": {
+    "title": "Terms & Conditions",
+    "text": "Please read our terms and conditions",
+    "link": "Terms and conditions DFX Swiss",
+    "confirm": "I have read and agree to the terms and conditions.",
+    "accept": "Accept"
   }
 }

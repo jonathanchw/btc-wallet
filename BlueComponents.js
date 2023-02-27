@@ -26,7 +26,6 @@ import NetworkTransactionFees, { NetworkTransactionFee, NetworkTransactionFeeTyp
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import { BlueCurrentTheme } from './components/themes';
-import PlusIcon from './components/icons/PlusIcon';
 import loc, { formatStringAddTwoWhiteSpaces } from './loc';
 
 const { height, width } = Dimensions.get('window');
@@ -262,7 +261,16 @@ export const BlueButtonLink = forwardRef((props, ref) => {
       {...props}
       ref={ref}
     >
-      <Text style={{ color: colors.foregroundColor, textAlign: 'center', fontSize: 16 }}>{props.title}</Text>
+      <Text
+        style={{
+          color: colors.foregroundColor,
+          textAlign: 'center',
+          fontSize: 16,
+          textDecorationLine: props.hasUnderline ? 'underline' : 'none',
+        }}
+      >
+        {props.title}
+      </Text>
     </TouchableOpacity>
   );
 });
@@ -392,7 +400,7 @@ export const BlueListItem = React.memo(props => {
 
   return (
     <ListItem
-      containerStyle={props.containerStyle ?? { backgroundColor: 'transparent' }}
+      containerStyle={props.containerStyle ?? { backgroundColor: 'transparent', borderBottomColor: '#113759' }}
       Component={props.Component ?? TouchableOpacity}
       bottomDivider={props.bottomDivider !== undefined ? props.bottomDivider : true}
       topDivider={props.topDivider !== undefined ? props.topDivider : false}
@@ -559,7 +567,6 @@ export const BlueHeaderDefaultMain = props => {
       >
         {props.leftText}
       </Text>
-      <PlusIcon onPress={props.onNewWalletPress} Component={TouchableOpacity} />
     </View>
   );
 };

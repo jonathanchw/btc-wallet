@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef, useMemo } from 'react';
 import { ActivityIndicator, Alert, FlatList, LayoutAnimation, StyleSheet, View } from 'react-native';
 import IdleTimerManager from 'react-native-idle-timer';
-import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
+import { StackActions, useNavigation, useRoute, useTheme } from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { BlueButton, BlueButtonLink, BlueFormLabel, BlueSpacing10, BlueSpacing20, SafeBlueArea } from '../../BlueComponents';
 import navigationStyle from '../../components/navigationStyle';
@@ -40,11 +40,11 @@ const ImportWalletDiscovery = () => {
     },
   });
 
-  const saveWallet = wallet => {
+  const saveWallet = async wallet => {
     if (importing.current) return;
     importing.current = true;
-    addAndSaveWallet(wallet);
-    navigation.dangerouslyGetParent().pop();
+    await addAndSaveWallet(wallet);
+    navigation.dispatch(StackActions.replace('Navigation'));
   };
 
   useEffect(() => {

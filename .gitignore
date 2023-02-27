@@ -21,6 +21,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 *.hprof
+tmp.xcconfig
 
 # Android/IntelliJ
 #
@@ -72,3 +73,6 @@ artifacts/
 *.mx
 *.realm
 *.realm.lock
+
+# Ruby
+vendor/*

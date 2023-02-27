@@ -11,6 +11,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
 import alert from '../../components/Alert';
 import { HDSegwitBech32Wallet } from '../../class';
+import Config from 'react-native-config';
 
 const A = require('../../blue_modules/analytics');
 const branch = require('../../current-branch.json');
@@ -36,8 +37,12 @@ const About = () => {
       marginTop: 54,
     },
     logo: {
-      width: 102,
-      height: 124,
+      aspectRatio: 409 / 128,
+      height: 32,
+    },
+    smallLogo: {
+      height: 18,
+      margin: 8,
     },
     textFree: {
       maxWidth: 260,
@@ -92,27 +97,25 @@ const About = () => {
   };
 
   const handleOnTwitterPress = () => {
-    Linking.openURL('https://twitter.com/bluewalletio');
-  };
-
-  const handleOnDiscordPress = () => {
-    Linking.openURL('https://discord.gg/btWq2Aby2z');
+    Linking.openURL('https://twitter.com/DFX_Swiss');
   };
 
   const handleOnTelegramPress = () => {
-    Linking.openURL('https://t.me/bluewallethat');
+    Linking.openURL('https://t.me/DFXswiss_en');
   };
+
   const handleOnGithubPress = () => {
-    Linking.openURL('https://github.com/BlueWallet/BlueWallet');
+    Linking.openURL('https://github.com/DFXSwiss/btc-wallet');
   };
+
   const handleOnRatePress = () => {
     const options = {
-      AppleAppID: '1376878040',
-      GooglePackageName: 'io.bluewallet.bluewallet',
+      AppleAppID: '6443845399',
+      GooglePackageName: 'com.defichain.app.dfx.bitcoin',
       preferredAndroidMarket: AndroidMarket.Google,
       preferInApp: Platform.OS !== 'android',
       openAppStoreIfInAppFails: true,
-      fallbackPlatformURL: 'https://bluewallet.io',
+      fallbackPlatformURL: 'https://dfx.swiss',
     };
     Rate.rate(options, success => {
       if (success) {
@@ -125,7 +128,7 @@ const About = () => {
     <ScrollView testID="AboutScrollView" contentInsetAdjustmentBehavior="automatic">
       <BlueCard>
         <View style={styles.center}>
-          <Image style={styles.logo} source={require('../../img/bluebeast.png')} />
+          <Image style={styles.logo} source={require('../../img/dfx/logo.png')} />
           <Text style={styles.textFree}>{loc.settings.about_free}</Text>
           <Text style={styles.textBackup}>{formatStringAddTwoWhiteSpaces(loc.settings.about_backup)}</Text>
           {((Platform.OS === 'android' && hasGmsSync()) || Platform.OS !== 'android') && (
@@ -134,31 +137,14 @@ const About = () => {
         </View>
       </BlueCard>
       <BlueListItem
-        leftIcon={{
-          name: 'twitter',
-          type: 'font-awesome',
-          color: '#1da1f2',
-        }}
+        leftAvatar={<Image style={styles.smallLogo} source={require('../../img/dfx/twitter.png')} />}
         onPress={handleOnTwitterPress}
         title={loc.settings.about_sm_twitter}
       />
       <BlueListItem
-        leftIcon={{
-          name: 'telegram',
-          type: 'font-awesome',
-          color: '#0088cc',
-        }}
+        leftAvatar={<Image style={styles.smallLogo} source={require('../../img/dfx/telegram.png')} />}
         onPress={handleOnTelegramPress}
         title={loc.settings.about_sm_telegram}
-      />
-      <BlueListItem
-        leftIcon={{
-          name: 'discord',
-          type: 'font-awesome-5',
-          color: '#7289da',
-        }}
-        onPress={handleOnDiscordPress}
-        title={loc.settings.about_sm_discord}
       />
       <BlueCard>
         <View style={styles.buildWith}>
@@ -245,6 +231,7 @@ const About = () => {
         w, h = {width}, {height}
       </BlueTextCentered>
       <BlueTextCentered>Unique ID: {getUniqueId()}</BlueTextCentered>
+      {Config.DFX_ENV !== undefined && Config.DFX_ENV !== 'prd' && <BlueTextCentered>Environment: {Config.DFX_ENV}</BlueTextCentered>}
       <View style={styles.copyToClipboard}>
         <TouchableOpacity
           accessibilityRole="button"
