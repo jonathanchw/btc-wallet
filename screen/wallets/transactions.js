@@ -32,7 +32,7 @@ import BlueClipboard from '../../blue_modules/clipboard';
 import TransactionsNavigationHeader from '../../components/TransactionsNavigationHeader';
 import { TransactionListItem } from '../../components/TransactionListItem';
 import alert from '../../components/Alert';
-import DfxButton from '../img/dfx/buttons/open-payment.png';
+import DfxButton from '../img/dfx/buttons/dfx-services.png';
 import { ImageButton } from '../../components/ImageButton';
 import { useSessionContext } from '../../contexts/session.context';
 
@@ -45,7 +45,8 @@ const buttonFontSize =
     : PixelRatio.roundToNearestPixel(Dimensions.get('window').width / 26);
 
 const WalletTransactions = () => {
-  const { wallets, saveToDisk, setSelectedWallet, walletTransactionUpdateStatus, isElectrumDisabled } = useContext(BlueStorageContext);
+  const { wallets, saveToDisk, setSelectedWallet, refreshAllWalletTransactions, walletTransactionUpdateStatus, isElectrumDisabled } =
+    useContext(BlueStorageContext);
   const walletID = wallets[0]?.getID();
   const [isLoading, setIsLoading] = useState(false);
   const { name } = useRoute();
@@ -58,9 +59,9 @@ const WalletTransactions = () => {
   const { setParams, setOptions, navigate } = useNavigation();
   const { colors } = useTheme();
   const walletActionButtonsRef = useRef();
-  const { needsSignUp, openPayment } = useSessionContext();
+  const { isNotAllowedInCountry, needsSignUp, openServices } = useSessionContext();
   const { width } = useWindowDimensions();
-  const [isHandlingOpenPayment, setIsHandlingOpenPayment] = useState(false);
+  const [isHandlingOpenServices, setIsHandlingOpenServices] = useState(false);
 
   const stylesHook = StyleSheet.create({
     listHeaderText: {
@@ -96,6 +97,10 @@ const WalletTransactions = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const showNotAvailableInCountryAlert = () => {
+    Alert.alert(loc.alert.availability, loc.alert.not_available, [{ text: loc._.ok }], { cancelable: false });
+  };
 
   useEffect(() => {
     setOptions({ headerTitle: walletTransactionUpdateStatus === walletID ? loc.transactions.updating : '' });
@@ -144,18 +149,17 @@ const WalletTransactions = () => {
   }, []);
 
   useEffect(() => {
-    if (needsSignUp) navigate('SignUp');
-  }, [needsSignUp, navigate]);
+    if (needsSignUp && !isNotAllowedInCountry) navigate('SignUp');
+  }, [needsSignUp, isNotAllowedInCountry, navigate]);
 
-  const handleOpenPayment = () => {
-    setIsHandlingOpenPayment(true);
-    if (needsSignUp) {
-      navigate('SignUp');
-      setIsHandlingOpenPayment(false);
+  const handleOpenServices = () => {
+    if (isNotAllowedInCountry) {
+      showNotAvailableInCountryAlert();
     } else {
-      openPayment()
-        .catch(console.error)
-        .finally(() => setIsHandlingOpenPayment(false));
+      setIsHandlingOpenServices(true);
+      openServices()
+        .then(() => setIsHandlingOpenServices(false))
+        .catch(console.error);
     }
   };
 
@@ -187,6 +191,7 @@ const WalletTransactions = () => {
     try {
       // await BlueElectrum.ping();
       await BlueElectrum.waitTillConnected();
+      await refreshAllWalletTransactions(wallet.getID(), false);
       /** @type {LegacyWallet} */
       const balanceStart = +new Date();
       const oldBalance = wallet.getBalance();
@@ -493,7 +498,7 @@ const WalletTransactions = () => {
       />
       <View style={styles.dfxButtonContainer}>
         <View style={styles.dfxIcons}>
-          <ImageButton source={DfxButton} onPress={handleOpenPayment} disabled={isHandlingOpenPayment} />
+          <ImageButton source={DfxButton} onPress={handleOpenServices} disabled={isHandlingOpenServices} />
         </View>
       </View>
       <View style={[styles.list, stylesHook.list]}>

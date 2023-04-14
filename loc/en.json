@@ -21,7 +21,9 @@
     "downloads_folder": "Downloads Folder"
   },
   "alert": {
-    "default": "Alert"
+    "default": "Alert",
+    "availability": "Availability",
+    "not_available": "Unfortunately, DFX services are not available in your country."
   },
   "azteco": {
     "codeIs": "Your voucher code is",
@@ -624,5 +626,8 @@
     "link": "Terms and conditions DFX Swiss",
     "confirm": "I have read and agree to the terms and conditions.",
     "accept": "Accept"
+  },
+  "sell": {
+    "header": "Sell"
   }
 }
