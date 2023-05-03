@@ -158,7 +158,7 @@ const WalletTransactions = () => {
       showNotAvailableInCountryAlert();
     } else {
       setIsHandlingOpenServices(true);
-      openServices(new BigNumber(wallet.getBalance()).dividedBy(10 ^ 8).toString())
+      openServices(new BigNumber(wallet.getBalance()).dividedBy(10 ** 8).toString())
         .then(() => setIsHandlingOpenServices(false))
         .catch(console.error);
     }
