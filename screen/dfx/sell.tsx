@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RouteProp, useNavigation, useRoute, useTheme } from '@react-navigation/native';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BlueButton, SafeBlueArea } from '../../BlueComponents';
 import { navigationStyleTx } from '../../components/navigationStyle';
 import loc from '../../loc';
@@ -89,7 +89,7 @@ const Sell = () => {
   async function handleConfirm() {
     if (!wallet) return;
     const changeAddress = await getChangeAddressAsync();
-    const requestedSatPerByte = Number(networkTransactionFees.mediumFee);
+    const requestedSatPerByte = Number(networkTransactionFees.fastestFee);
     const lutxo = wallet.getUtxo();
     const targets = [{ address: sell?.deposit.address, value: currency.btcToSatoshi(amount) }];
     const { tx, outputs, psbt, fee } = wallet.createTransaction(
@@ -118,6 +118,16 @@ const Sell = () => {
       payjoinUrl: undefined,
       psbt,
     });
+  }
+
+  function handleError(e: any) {
+    Alert.alert('Something went wrong', '' + e, [
+      {
+        text: loc._.ok,
+        onPress: () => {},
+        style: 'default',
+      },
+    ]);
   }
 
   const getChangeAddressAsync = async () => {
@@ -177,7 +187,7 @@ const Sell = () => {
           </View>
           <View style={styles.buttonContainer}>
             <View style={styles.button}>
-              <BlueButton onPress={() => handleConfirm()} title={loc.sell.confirm} testID="SellConfirm" />
+              <BlueButton onPress={() => handleConfirm().catch(handleError)} title={loc.sell.confirm} testID="SellConfirm" />
             </View>
           </View>
         </View>
