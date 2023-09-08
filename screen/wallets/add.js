@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BlueText, BlueListItem, BlueFormLabel, BlueButton, BlueButtonLink, BlueSpacing20 } from '../../BlueComponents';
+import { BlueText, BlueListItem, BlueButton, BlueButtonLink, BlueSpacing20 } from '../../BlueComponents';
 import navigationStyle from '../../components/navigationStyle';
 import { HDSegwitBech32Wallet, SegwitP2SHWallet, HDSegwitP2SHWallet, AppStorage } from '../../class';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -37,7 +37,6 @@ const WalletsAdd = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [walletBaseURI, setWalletBaseURI] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(2);
-  const [label, setLabel] = useState('');
   const [isAdvancedOptionsEnabled, setIsAdvancedOptionsEnabled] = useState(false);
   const { navigate, goBack, dispatch } = useNavigation();
   const [entropy, setEntropy] = useState();
@@ -97,7 +96,6 @@ const WalletsAdd = () => {
     setIsLoading(true);
 
     const w = new HDSegwitBech32Wallet();
-    w.setLabel(label);
 
     if (entropy) {
       try {
@@ -135,20 +133,11 @@ const WalletsAdd = () => {
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <BlueSpacing20 />
       <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : null} keyboardVerticalOffset={62}>
-        <BlueFormLabel>{loc.wallets.add_wallet_name}</BlueFormLabel>
-        <View style={[styles.label, stylesHook.label]}>
-          <TextInput
-            testID="WalletNameInput"
-            value={label}
-            placeholderTextColor="#81868e"
-            placeholder={loc.wallets.add_placeholder}
-            onChangeText={setLabel}
-            style={styles.textInputCommon}
-            editable={!isLoading}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-
+        {!isLoading && (
+          <TouchableOpacity onPress={handleDisclaimerPress}>
+            <Text style={styles.disclaimer}>{loc.wallets.add_disclaimer}</Text>
+          </TouchableOpacity>
+        )}
         <View style={styles.advanced}>
           {(() => {
             if (selectedWalletType === ButtonSelected.ONCHAIN && isAdvancedOptionsEnabled) {
@@ -221,13 +210,6 @@ const WalletsAdd = () => {
               onPress={navigateToImportWallet}
             />
           )}
-          <BlueSpacing20 />
-          <BlueSpacing20 />
-          {!isLoading && (
-            <TouchableOpacity onPress={handleDisclaimerPress}>
-              <Text style={styles.disclaimer}>{loc.wallets.add_disclaimer}</Text>
-            </TouchableOpacity>
-          )}
         </View>
       </KeyboardAvoidingView>
     </ScrollView>
@@ -245,17 +227,6 @@ WalletsAdd.navigationOptions = navigationStyle(
 const styles = StyleSheet.create({
   createButton: {
     flex: 1,
-  },
-  label: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderBottomWidth: 0.5,
-    minHeight: 44,
-    height: 44,
-    marginHorizontal: 20,
-    alignItems: 'center',
-    marginVertical: 16,
-    borderRadius: 4,
   },
   textInputCommon: {
     flex: 1,
@@ -286,6 +257,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   disclaimer: {
+    margin: 20,
     color: '#9aa0aa',
     textAlign: 'center',
   },

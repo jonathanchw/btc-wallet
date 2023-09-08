@@ -166,7 +166,7 @@ export default class TransactionsNavigationHeader extends Component {
       <View style={styles.lineaderGradient}>
         <Image source={require('../img/dfx/wallet-card.png')} style={[styles.chainIcon, { width: this.props.width }]} />
         <Text testID="WalletLabel" numberOfLines={1} style={styles.walletLabel}>
-          {this.state.wallet.getLabel()}
+          {loc.wallets.total}
         </Text>
         <ToolTipMenu
           onPress={this.changeWalletBalanceUnit}

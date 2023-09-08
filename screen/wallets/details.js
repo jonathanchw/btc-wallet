@@ -2,9 +2,7 @@ import React, { useEffect, useState, useCallback, useContext, useRef, useMemo, u
 import {
   View,
   Text,
-  TextInput,
   Alert,
-  KeyboardAvoidingView,
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
@@ -73,22 +71,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 14,
   },
-  input: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderBottomWidth: 0.5,
-    minHeight: 44,
-    height: 44,
-    alignItems: 'center',
-    borderRadius: 4,
-  },
-  inputText: {
-    flex: 1,
-    marginHorizontal: 8,
-    minHeight: 33,
-    color: '#81868e',
-    writingDirection: I18nManager.isRTL ? 'rtl' : 'ltr',
-  },
   hardware: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -106,17 +88,6 @@ const styles = StyleSheet.create({
   marginRight16: {
     marginRight: 16,
   },
-  save: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 80,
-    borderRadius: 8,
-    height: 34,
-  },
-  saveText: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
 });
 
 const WalletDetails = () => {
@@ -126,12 +97,11 @@ const WalletDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [backdoorPressed, setBackdoorPressed] = useState(0);
   const wallet = useRef(wallets.find(w => w.getID() === walletID)).current;
-  const [walletName, setWalletName] = useState(wallet.getLabel());
   const [useWithHardwareWallet, setUseWithHardwareWallet] = useState(wallet.useWithHardwareWalletEnabled());
   const { isAdancedModeEnabled } = useContext(BlueStorageContext);
   const [isAdvancedModeEnabledRender, setIsAdvancedModeEnabledRender] = useState(false);
   const [hideTransactionsInWalletsList, setHideTransactionsInWalletsList] = useState(!wallet.getHideTransactionsInWalletsList());
-  const { goBack, navigate, setOptions, dispatch } = useNavigation();
+  const { navigate, dispatch } = useNavigation();
   const { colors } = useTheme();
   const [masterFingerprint, setMasterFingerprint] = useState();
   const walletTransactionsLength = useMemo(() => wallet.getTransactions().length, [wallet]);
@@ -162,18 +132,6 @@ const WalletDetails = () => {
     textValue: {
       color: colors.outputValue,
     },
-    input: {
-      borderColor: colors.formBorder,
-      borderBottomColor: colors.formBorder,
-
-      backgroundColor: colors.inputBackgroundColor,
-    },
-    save: {
-      backgroundColor: colors.lightButton,
-    },
-    saveText: {
-      color: colors.buttonTextColor,
-    },
   });
   useEffect(() => {
     if (wallet.type === LightningLdkWallet.type) {
@@ -181,44 +139,10 @@ const WalletDetails = () => {
     }
   }, [wallet]);
 
-  const setLabel = () => {
-    setIsLoading(true);
-    if (walletName.trim().length > 0) {
-      wallet.setLabel(walletName.trim());
-      if (wallet.type === WatchOnlyWallet.type && wallet.isHd()) {
-        wallet.setUseWithHardwareWalletEnabled(useWithHardwareWallet);
-      }
-      wallet.setHideTransactionsInWalletsList(!hideTransactionsInWalletsList);
-    }
-    saveToDisk()
-      .then(() => {
-        alert(loc.wallets.details_wallet_updated);
-        goBack();
-      })
-      .catch(error => {
-        console.log(error.message);
-        setIsLoading(false);
-      });
-  };
-
   useLayoutEffect(() => {
     isAdancedModeEnabled().then(setIsAdvancedModeEnabledRender);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          accessibilityRole="button"
-          testID="Save"
-          disabled={isLoading}
-          style={[styles.save, stylesHook.save]}
-          onPress={setLabel}
-        >
-          <Text style={[styles.saveText, stylesHook.saveText]}>{loc.wallets.details_save}</Text>
-        </TouchableOpacity>
-      ),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, colors, walletName, useWithHardwareWallet, hideTransactionsInWalletsList]);
+  }, [isLoading, colors, useWithHardwareWallet, hideTransactionsInWalletsList]);
 
   useEffect(() => {
     if (wallets.some(wallet => wallet.getID() === walletID)) {
@@ -401,13 +325,6 @@ const WalletDetails = () => {
     }
   };
 
-  const walletNameTextInputOnBlur = () => {
-    if (walletName.trim().length === 0) {
-      const walletLabel = wallet.getLabel();
-      setWalletName(walletLabel);
-    }
-  };
-
   const onExportHistoryPressed = async () => {
     let csvFile = [
       loc.transactions.date,
@@ -479,30 +396,13 @@ const WalletDetails = () => {
                 ) {
                   return (
                     <>
-                      <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_address.toLowerCase()}</Text>
+                      <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_address}</Text>
                       <Text style={[styles.textValue, stylesHook.textValue]}>{wallet.getAddress()}</Text>
                     </>
                   );
                 }
               })()}
-              <Text style={[styles.textLabel2, stylesHook.textLabel2]}>{loc.wallets.add_wallet_name.toLowerCase()}</Text>
-              <KeyboardAvoidingView enabled={!Platform.isPad} behavior={Platform.OS === 'ios' ? 'position' : null}>
-                <View style={[styles.input, stylesHook.input]}>
-                  <TextInput
-                    value={walletName}
-                    onChangeText={setWalletName}
-                    onBlur={walletNameTextInputOnBlur}
-                    numberOfLines={1}
-                    placeholderTextColor="#81868e"
-                    style={styles.inputText}
-                    editable={!isLoading}
-                    underlineColorAndroid="transparent"
-                    testID="WalletNameInput"
-                  />
-                </View>
-              </KeyboardAvoidingView>
-              <BlueSpacing20 />
-              <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_type.toLowerCase()}</Text>
+              <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_type}</Text>
               <Text style={[styles.textValue, stylesHook.textValue]}>{wallet.typeReadable}</Text>
 
               {wallet.type === LightningLdkWallet.type && (
@@ -537,21 +437,21 @@ const WalletDetails = () => {
 
               {wallet.type === LightningCustodianWallet.type && (
                 <>
-                  <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_connected_to.toLowerCase()}</Text>
+                  <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.details_connected_to}</Text>
                   <BlueText>{wallet.getBaseURI()}</BlueText>
                 </>
               )}
 
               {wallet.type === HDAezeedWallet.type && (
                 <>
-                  <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.identity_pubkey.toLowerCase()}</Text>
+                  <Text style={[styles.textLabel1, stylesHook.textLabel1]}>{loc.wallets.identity_pubkey}</Text>
                   <BlueText>{wallet.getIdentityPubkey()}</BlueText>
                 </>
               )}
               <BlueSpacing20 />
               <>
                 <Text onPress={exportInternals} style={[styles.textLabel2, stylesHook.textLabel2]}>
-                  {loc.transactions.list_title.toLowerCase()}
+                  {loc.transactions.list_title}
                 </Text>
                 <View style={styles.hardware}>
                   <BlueText>{loc.wallets.details_display}</BlueText>
@@ -560,7 +460,7 @@ const WalletDetails = () => {
               </>
               <>
                 <Text onPress={purgeTransactions} style={[styles.textLabel2, stylesHook.textLabel2]}>
-                  {loc.transactions.transactions_count.toLowerCase()}
+                  {loc.transactions.transactions_count}
                 </Text>
                 <BlueText>{wallet.getTransactions().length}</BlueText>
               </>
@@ -569,7 +469,7 @@ const WalletDetails = () => {
                 {wallet.type === WatchOnlyWallet.type && wallet.isHd() && (
                   <>
                     <BlueSpacing10 />
-                    <Text style={[styles.textLabel2, stylesHook.textLabel2]}>{loc.wallets.details_advanced.toLowerCase()}</Text>
+                    <Text style={[styles.textLabel2, stylesHook.textLabel2]}>{loc.wallets.details_advanced}</Text>
                     <View style={styles.hardware}>
                       <BlueText>{loc.wallets.details_use_with_hardware_wallet}</BlueText>
                       <Switch value={useWithHardwareWallet} onValueChange={setUseWithHardwareWallet} />
@@ -581,7 +481,7 @@ const WalletDetails = () => {
                     {wallet.allowMasterFingerprint() && (
                       <View style={styles.marginRight16}>
                         <Text style={[styles.textLabel2, stylesHook.textLabel2]}>
-                          {loc.wallets.details_master_fingerprint.toLowerCase()}
+                          {loc.wallets.details_master_fingerprint}
                         </Text>
                         <BlueText>{masterFingerprint ?? <ActivityIndicator />}</BlueText>
                       </View>
