@@ -485,7 +485,8 @@
     "add_ln_wallet_first": "Bitte zuerst ein Lightning-Wallet hinzufügen.",
     "identity_pubkey": "Pubkey-Identität",
     "xpub_title": "Wallet xPub",
-    "backupSeed": "Backup nicht verifiziert"
+    "backupSeed": "Wallet Backup",
+    "backupSeedWarning": "Backup nicht verifiziert"
   },
   "multisig": {
     "multisig_vault": "Tresor",

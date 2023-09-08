@@ -490,7 +490,8 @@
     "add_ln_wallet_first": "You must first add a Lightning wallet.",
     "identity_pubkey": "Identity Pubkey",
     "xpub_title": "Wallet XPUB",
-    "backupSeed": "Backup not verified"
+    "backupSeed": "Backup your wallet",
+    "backupSeedWarning": "Backup not verified"
   },
   "multisig": {
     "multisig_vault": "Vault",

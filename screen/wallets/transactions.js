@@ -136,7 +136,8 @@ const WalletTransactions = () => {
       setParams({
         walletID,
         isLoading: false,
-        showsBackupSeed: !newWallet.getUserHasBackedUpSeed() && newWallet.getBalance() > 0,
+        showsBackupSeed: !newWallet.getUserHasBackedUpSeed(),
+        backupWarning: newWallet.getBalance() > 0,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -587,20 +588,37 @@ const WalletTransactions = () => {
 export default WalletTransactions;
 
 WalletTransactions.navigationOptions = navigationStyle({}, (options, { theme, navigation, route }) => {
+  const stylesHook = StyleSheet.create({
+    backupSeed: {
+      height: 34,
+      padding: 8,
+      borderRadius: 8,
+      backgroundColor: route?.params?.backupWarning ? '#FFF389' : theme.colors.buttonBackgroundColor,
+    },
+    backupSeedText: {
+      marginLeft: 4,
+      color: route?.params?.backupWarning ? '#072440' : theme.colors.buttonAlternativeTextColor,
+      fontWeight: '600',
+      fontSize: 14,
+    },
+  });
+
   return {
     headerLeft: () =>
       route?.params?.showsBackupSeed ? (
         <TouchableOpacity
           accessibilityRole="button"
           testID="backupSeed"
-          style={styles.backupSeed}
+          style={stylesHook.backupSeed}
           onPress={() => {
             navigation.navigate('BackupSeedRoot', { screenName: 'BackupExplanation' });
           }}
         >
           <View style={styles.backupSeedContainer}>
-            <Icon name="warning-outline" type="ionicon" size={18} color="#072440" />
-            <Text style={styles.backupSeedText}>{loc.wallets.backupSeed}</Text>
+            {route?.params?.backupWarning && <Icon name="warning-outline" type="ionicon" size={18} color="#072440" />}
+            <Text style={stylesHook.backupSeedText}>
+              {route?.params?.backupWarning ? loc.wallets.backupSeedWarning : loc.wallets.backupSeed}
+            </Text>
           </View>
         </TouchableOpacity>
       ) : null,
@@ -649,21 +667,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
-  backupSeed: {
-    height: 34,
-    padding: 8,
-    backgroundColor: '#FFF389',
-    borderRadius: 8,
-  },
   backupSeedContainer: {
     flex: 1,
     flexDirection: 'row',
-  },
-  backupSeedText: {
-    marginLeft: 4,
-    color: '#072440',
-    fontWeight: '600',
-    fontSize: 14,
   },
   activityIndicator: {
     marginVertical: 20,
