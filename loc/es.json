@@ -402,6 +402,7 @@
     "add_title": "Añadir cartera",
     "add_wallet_name": "Nombre",
     "add_wallet_type": "Tipo de cartera",
+    "add_disclaimer": "Por favor, ten en cuenta que al usar esta cartera self-custodial aceptas automáticamente el descargo de responsabilidad.",
     "balance": "Balance",
     "clipboard_bitcoin": "Tienes una dirección de Bitcoin en tu portapapeles. ¿Quieres usarla para una transacción?",
     "clipboard_lightning": "Tienes una factura Lightning en tu portapapeles. ¿Quieres usarla para una transacción?",
@@ -614,11 +615,11 @@
     "could_not_auth": "No pudimos autenticarte en {hostname}.",
     "authenticate": "Autenticar"
   },
-  "signUp": {
-    "title": "Condiciones generales",
-    "text": "Lea nuestras Condiciones Generales",
-    "link": "Condiciones generales DFX Swiss",
-    "confirm": "He leído y acepto las Condiciones Generales.",
-    "accept": "Acepto"
+  "sell": {
+    "header": "Confirmar venta",
+    "bankAccount": "A tu cuenta bancaria",
+    "currency": "Tu divisa",
+    "info": "Serás notificado por correo electrónico cuando se realice la transferencia bancaria a tu cuenta.",
+    "confirm": "Cobrar en cuenta bancaria"
   }
 }

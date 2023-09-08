@@ -401,6 +401,7 @@
     "add_title": "ajouter un portefeuille",
     "add_wallet_name": "nom du portefeuille",
     "add_wallet_type": "type",
+    "add_disclaimer" : "Veuillez noter qu'en utilisant ce portefeuille self-custodial, vous acceptez automatiquement l'avis de non-responsabilité.",
     "balance": "Solde",
     "clipboard_bitcoin": "Vous avez une adresse bitcoin dans votre presse-papier. Voulez vous l'utiliser pour une transaction ?",
     "clipboard_lightning": "Vous avez une facture Ligthning dans votre presse-papier. Voulez vous l'utiliser pour une transaction ?",
@@ -612,11 +613,11 @@
     "could_not_auth": "Nous n'avons pas pu vous authentifier à {hostname}.",
     "authenticate": "Authentifier"
   },
-  "signUp": {
-    "title": "Conditions générales",
-    "text": "Veuillez lire nos conditions générales",
-    "link": "Conditions générales DFX Swiss",
-    "confirm": "J'ai lu et j'accepte les conditions générales.",
-    "accept": "Accepter"
+  "sell": {
+    "header": "Confirmer la vente",
+    "bankAccount": "Vers votre compte bancaire",
+    "currency": "Votre devise",
+    "info": "Vous serez notifié par email lorsque le transfert bancaire vers votre compte sera effectué.",
+    "confirm": "Encaisser sur le compte bancaire"
   }
 }

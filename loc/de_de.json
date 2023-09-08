@@ -403,6 +403,7 @@
     "add_title": "Wallet hinzufügen",
     "add_wallet_name": "Wallet Name",
     "add_wallet_type": "Typ",
+    "add_disclaimer": "Bitte beachte, dass Du mit der Nutzung dieser self-custodial Wallet automatisch den Haftungsausschluss akzeptierst.",
     "balance": "Saldo",
     "clipboard_bitcoin": "Willst Du die Bitcoin Adresse in der Zwischenablage für eine Transaktion verwenden?",
     "clipboard_lightning": "Willst Du die Lightning Rechnung in der Zwischenablage für eine Transaktion verwenden?",
@@ -615,11 +616,11 @@
     "could_not_auth": "Authentifizierung bei {hostname} fehlgeschlagen.",
     "authenticate": "Authentifizieren"
   },
-  "signUp": {
-    "title": "Allgemeinen Geschäftsbedingungen",
-    "text": "Bitte lesen Sie unsere Allgemeinen Geschäftsbedingungen",
-    "link": "Allgemeinen Geschäftsbedingungen DFX Swiss",
-    "confirm": "Ich habe die Allgemeinen Geschäftsbedingungen gelesen und stimme ihnen zu.",
-    "accept": "Akzeptieren"
+  "sell": {
+    "header": "Verkauf bestätigen",
+    "bankAccount": "Auf Dein Bankkonto",
+    "currency": "Deine Währung",
+    "info": "Du wirst per E-Mail benachrichtigt, wenn die Überweisung auf Dein Konto erfolgt ist.",
+    "confirm": "Auszahlung auf Dein Bankkonto"
   }
 }

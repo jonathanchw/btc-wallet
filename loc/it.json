@@ -387,6 +387,7 @@
     "add_title": "Aggiungi Portafoglio",
     "add_wallet_name": "Nome Portafoglio",
     "add_wallet_type": "Tipo",
+    "add_disclaimer": "Si prega di notare che utilizzando questo portafoglio self-custodial si accetta automaticamente il disclaimer.",
     "balance": "Saldo",
     "clipboard_bitcoin": "Negli appunti è presente un indirizzo Bitcoin. Desideri usarlo per una transazione?",
     "clipboard_lightning": "Negli appunti è presente una fattura Lightning. Desideri usarla per una transazione?",
@@ -496,11 +497,11 @@
     "type_receive": "Ricevi",
     "transactions": "Transazioni"
   },
-  "signUp": {
-    "title": "Termini e condizioni generali",
-    "text": "Si prega di leggere i nostri Termini e Condizioni Generali",
-    "link": "Termini e condizioni generali DFX Swiss",
-    "confirm": "Ho letto e accetto i Termini e le Condizioni Generali.",
-    "accept": "Accetto"
+  "sell": {
+    "header": "Confermare la vendita",
+    "bankAccount": "Al tuo conto bancario",
+    "currency": "La tua valuta",
+    "info": "Sarete avvisati via e-mail quando il trasferimento bancario sul vostro conto sarà stato effettuato.",
+    "confirm": "Incasso sul conto bancario"
   }
 }

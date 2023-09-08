@@ -288,7 +288,7 @@
     "add_entropy_generated": "{gen} bytes de entropia gerada",
     "add_entropy_provide": "Entropia através de dados",
     "add_entropy_remain": "{gen} bytes de entropia gerada. Os bytes {rem} restantes serão obtidos do gerador de números aleatórios do sistema.",
-    "add_import_wallet": "Importar wallet",
+    "add_import_wallet": "Importar carteira",
     "add_lightning": "Lightning",
     "add_lightning_explain": "Para gastar com transações instantâneas",
     "add_lndhub": "Conecte-se ao seu LNDHub",
@@ -296,6 +296,7 @@
     "add_title": "adicionar wallet",
     "add_wallet_name": "nome",
     "add_wallet_type": "tipo",
+    "add_disclaimer": "Tenha em atenção que, ao utilizar esta carteira self-custodial, aceita automaticamente a declaração de exoneração de responsabilidade.",
     "details_address": "Endereço",
     "details_advanced": "Avançado",
     "details_are_you_sure": "Tem a certeza?",
@@ -358,11 +359,11 @@
     "type_receive": "receber",
     "transactions": "transacções"
   },
-  "signUp": {
-    "title": "Termos e condições gerais",
-    "text": "Por favor leia os nossos Termos e Condições Gerais",
-    "link": "Termos e Condições Gerais DFX Swiss",
-    "confirm": "Li e concordo com os Termos e Condições Gerais.",
-    "accept": "Aceito"
+  "sell": {
+    "header": "Confirmar venda",
+    "bankAccount": "Para a sua conta bancária",
+    "currency": "A sua moeda",
+    "info": "Será notificado por correio eletrónico quando a transferência bancária para a sua conta estiver concluída.",
+    "confirm": "Transferir para a conta bancária"
   }
 }

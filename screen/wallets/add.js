@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
   Text,
+  Linking,
   ScrollView,
   ActivityIndicator,
   Keyboard,
@@ -10,6 +11,7 @@ import {
   StatusBar,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlueText, BlueListItem, BlueFormLabel, BlueButton, BlueButtonLink, BlueSpacing20 } from '../../BlueComponents';
@@ -21,6 +23,8 @@ import { Chain } from '../../models/bitcoinUnits';
 import loc from '../../loc';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
 import alert from '../../components/Alert';
+import Config from 'react-native-config';
+
 const A = require('../../blue_modules/analytics');
 
 const ButtonSelected = Object.freeze({
@@ -122,6 +126,10 @@ const WalletsAdd = () => {
     navigate('ImportWallet');
   };
 
+  const handleDisclaimerPress = () => {
+    if (Config.REACT_APP_DISCLAIMER_URL) Linking.openURL(Config.REACT_APP_DISCLAIMER_URL);
+  };
+
   return (
     <ScrollView style={stylesHook.root}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
@@ -213,6 +221,13 @@ const WalletsAdd = () => {
               onPress={navigateToImportWallet}
             />
           )}
+          <BlueSpacing20 />
+          <BlueSpacing20 />
+          {!isLoading && (
+            <TouchableOpacity onPress={handleDisclaimerPress}>
+              <Text style={styles.disclaimer}>{loc.wallets.add_disclaimer}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </KeyboardAvoidingView>
     </ScrollView>
@@ -269,6 +284,10 @@ const styles = StyleSheet.create({
   },
   noPadding: {
     paddingHorizontal: 0,
+  },
+  disclaimer: {
+    color: '#9aa0aa',
+    textAlign: 'center',
   },
 });
 

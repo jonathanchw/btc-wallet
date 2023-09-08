@@ -79,7 +79,6 @@ import { isDesktop } from './blue_modules/environment';
 import SettingsPrivacy from './screen/settings/SettingsPrivacy';
 import LNDViewAdditionalInvoicePreImage from './screen/lnd/lndViewAdditionalInvoicePreImage';
 import LdkViewLogs from './screen/wallets/ldkViewLogs';
-import SignUp from './screen/wallets/dfx/sign-up';
 import BackupExplanation from './screen/wallets/dfx/backup-explanation';
 import { BlueStorageContext } from './blue_modules/storage-context';
 import Sell from './screen/dfx/sell';
@@ -95,7 +94,6 @@ const WalletsRoot = () => {
       <WalletsStack.Screen name="LdkOpenChannel" component={LdkOpenChannel} options={LdkOpenChannel.navigationOptions(theme)} />
       <WalletsStack.Screen name="LdkInfo" component={LdkInfo} options={LdkInfo.navigationOptions(theme)} />
       <WalletsStack.Screen name="WalletDetails" component={WalletDetails} options={WalletDetails.navigationOptions(theme)} />
-      <WalletsStack.Screen name="SignUp" component={SignUp} options={SignUp.navigationOptions(theme)} />
       <WalletsStack.Screen name="LdkViewLogs" component={LdkViewLogs} options={LdkViewLogs.navigationOptions(theme)} />
       <WalletsStack.Screen name="TransactionDetails" component={TransactionDetails} options={TransactionDetails.navigationOptions(theme)} />
       <WalletsStack.Screen name="TransactionStatus" component={TransactionStatus} options={TransactionStatus.navigationOptions(theme)} />

@@ -61,7 +61,7 @@ const WalletTransactions = () => {
   const { setParams, setOptions, navigate } = useNavigation();
   const { colors } = useTheme();
   const walletActionButtonsRef = useRef();
-  const { isNotAllowedInCountry, needsSignUp, openServices } = useSessionContext();
+  const { isNotAllowedInCountry, needsSignUp, signUp, openServices, isProcessing, isLoggedIn } = useSessionContext();
   const { width } = useWindowDimensions();
   const [isHandlingOpenServices, setIsHandlingOpenServices] = useState(false);
 
@@ -151,8 +151,8 @@ const WalletTransactions = () => {
   }, [wallet]);
 
   useEffect(() => {
-    if (needsSignUp && !isNotAllowedInCountry) navigate('SignUp');
-  }, [needsSignUp, isNotAllowedInCountry, navigate]);
+    if (needsSignUp && !isNotAllowedInCountry) signUp();
+  }, [needsSignUp, signUp, isNotAllowedInCountry]);
 
   const handleOpenServices = () => {
     if (isNotAllowedInCountry) {
@@ -507,9 +507,14 @@ const WalletTransactions = () => {
       />
       <View style={styles.dfxButtonContainer}>
         <View style={styles.dfxIcons}>
-          <ImageButton source={DfxButton} onPress={handleOpenServices} disabled={isHandlingOpenServices} />
+          {!isLoggedIn || isProcessing ? (
+            <ActivityIndicator />
+          ) : (
+            <ImageButton source={DfxButton} onPress={handleOpenServices} disabled={isHandlingOpenServices} />
+          )}
         </View>
       </View>
+
       <View style={[styles.list, stylesHook.list]}>
         <FlatList
           ListHeaderComponent={renderListHeaderComponent}
@@ -517,12 +522,10 @@ const WalletTransactions = () => {
           onEndReached={async () => {
             // pagination in works. in this block we will add more txs to FlatList
             // so as user scrolls closer to bottom it will render mode transactions
-
             if (getTransactionsSliced(Infinity).length < limit) {
               // all list rendered. nop
               return;
             }
-
             setDataSource(getTransactionsSliced(limit + pageSize));
             setLimit(prev => prev + pageSize);
             setPageSize(prev => prev * 2);
@@ -544,7 +547,6 @@ const WalletTransactions = () => {
           contentInset={{ top: 0, left: 0, bottom: 90, right: 0 }}
         />
       </View>
-
       <FContainer ref={walletActionButtonsRef}>
         {wallet.allowReceive() && (
           <FButton
@@ -710,5 +712,6 @@ const styles = StyleSheet.create({
   },
   dfxIcons: {
     height: 67,
+    justifyContent: 'center',
   },
 });
