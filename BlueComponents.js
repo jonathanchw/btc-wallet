@@ -567,6 +567,12 @@ export const BlueHeaderDefaultMain = props => {
       >
         {props.leftText}
       </Text>
+      <PlusIcon
+        accessibilityRole="button"
+        accessibilityLabel={loc.wallets.add_title}
+        onPress={props.onNewWalletPress}
+        Component={TouchableOpacity}
+      />
     </View>
   );
 };
@@ -799,7 +805,7 @@ export class BlueReplaceFeeSuggestions extends Component {
                 paddingLeft: 5,
               }}
               onFocus={() => this.onCustomFeeTextChange(this.state.customFeeValue)}
-              defaultValue={`${this.props.transactionMinimum}`}
+              defaultValue={this.props.transactionMinimum}
               placeholder={loc.send.fee_satvbyte}
               placeholderTextColor="#81868e"
               inputAccessoryViewID={BlueDismissKeyboardInputAccessory.InputAccessoryViewID}

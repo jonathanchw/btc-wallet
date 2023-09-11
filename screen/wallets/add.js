@@ -25,6 +25,8 @@ import { BlueStorageContext } from '../../blue_modules/storage-context';
 import alert from '../../components/Alert';
 import Config from 'react-native-config';
 
+const BlueApp = require('../../BlueApp');
+const AppStorage = BlueApp.AppStorage;
 const A = require('../../blue_modules/analytics');
 
 const ButtonSelected = Object.freeze({
@@ -33,7 +35,7 @@ const ButtonSelected = Object.freeze({
 
 const WalletsAdd = () => {
   const { colors } = useTheme();
-  const { addWallet, saveToDisk, isAdancedModeEnabled } = useContext(BlueStorageContext);
+  const { addWallet, saveToDisk, isAdvancedModeEnabled } = useContext(BlueStorageContext);
   const [isLoading, setIsLoading] = useState(true);
   const [walletBaseURI, setWalletBaseURI] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(2);
@@ -66,9 +68,9 @@ const WalletsAdd = () => {
 
   useEffect(() => {
     AsyncStorage.getItem(AppStorage.LNDHUB)
-      .then(url => setWalletBaseURI(url || 'https://lndhub.io'))
+      .then(url => setWalletBaseURI(url))
       .catch(() => setWalletBaseURI(''));
-    isAdancedModeEnabled()
+    isAdvancedModeEnabled()
       .then(setIsAdvancedOptionsEnabled)
       .finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps

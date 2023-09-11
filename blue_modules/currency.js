@@ -53,6 +53,9 @@ async function _restoreSavedPreferredFiatCurrencyFromStorage() {
     if (preferredFiatCurrency === null) {
       throw Error('No Preferred Fiat selected');
     }
+
+    preferredFiatCurrency = FiatUnit[preferredFiatCurrency.endPointKey] || preferredFiatCurrency;
+    // ^^^ in case configuration in json file changed (and is different from what we stored) we reload it
   } catch (_) {
     const deviceCurrencies = RNLocalize.getCurrencies();
     if (Object.keys(FiatUnit).some(unit => unit === deviceCurrencies[0])) {
@@ -94,7 +97,7 @@ async function updateExchangeRate() {
   } catch (Err) {
     console.log('Error encountered when attempting to update exchange rate...');
     console.warn(Err.message);
-    const rate = JSON.parse(await AsyncStorage.getItem(EXCHANGE_RATES_STORAGE_KEY));
+    rate = JSON.parse(await AsyncStorage.getItem(EXCHANGE_RATES_STORAGE_KEY));
     rate.LAST_UPDATED_ERROR = true;
     exchangeRates.LAST_UPDATED_ERROR = true;
     await AsyncStorage.setItem(EXCHANGE_RATES_STORAGE_KEY, JSON.stringify(rate));

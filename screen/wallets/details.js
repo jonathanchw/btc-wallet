@@ -96,10 +96,12 @@ const WalletDetails = () => {
   const { walletID } = useRoute().params;
   const [isLoading, setIsLoading] = useState(false);
   const [backdoorPressed, setBackdoorPressed] = useState(0);
+  const [backdoorBip47Pressed, setBackdoorBip47Pressed] = useState(0);
   const wallet = useRef(wallets.find(w => w.getID() === walletID)).current;
   const [useWithHardwareWallet, setUseWithHardwareWallet] = useState(wallet.useWithHardwareWalletEnabled());
-  const { isAdancedModeEnabled } = useContext(BlueStorageContext);
+  const { isAdvancedModeEnabled } = useContext(BlueStorageContext);
   const [isAdvancedModeEnabledRender, setIsAdvancedModeEnabledRender] = useState(false);
+  const [isBIP47Enabled, setIsBIP47Enabled] = useState(wallet.isBIP47Enabled());
   const [hideTransactionsInWalletsList, setHideTransactionsInWalletsList] = useState(!wallet.getHideTransactionsInWalletsList());
   const { navigate, dispatch } = useNavigation();
   const { colors } = useTheme();
@@ -138,14 +140,13 @@ const WalletDetails = () => {
       wallet.getInfo().then(setLightningWalletInfo);
     }
   }, [wallet]);
-
   useLayoutEffect(() => {
-    isAdancedModeEnabled().then(setIsAdvancedModeEnabledRender);
+    isAdvancedModeEnabled().then(setIsAdvancedModeEnabledRender);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, colors, useWithHardwareWallet, hideTransactionsInWalletsList]);
+  }, [isLoading, colors, useWithHardwareWallet, hideTransactionsInWalletsList, isBIP47Enabled]);
 
   useEffect(() => {
-    if (wallets.some(wallet => wallet.getID() === walletID)) {
+    if (wallets.some(w => w.getID() === walletID)) {
       setSelectedWallet(walletID);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,7 +154,11 @@ const WalletDetails = () => {
 
   const navigateToOverviewAndDeleteWallet = () => {
     setIsLoading(true);
-    Notifications.unsubscribe(wallet.getAllExternalAddresses(), [], []);
+    let externalAddresses = [];
+    try {
+      externalAddresses = wallet.getAllExternalAddresses();
+    } catch (_) {}
+    Notifications.unsubscribe(externalAddresses, [], []);
     dispatch(StackActions.replace('AddWalletRoot'));
     deleteWallet(wallet);
     saveToDisk(true);
@@ -233,6 +238,14 @@ const WalletDetails = () => {
       walletID: wallet.getID(),
     });
 
+  const navigateToPaymentCodes = () =>
+    navigate('PaymentCodeRoot', {
+      screen: 'PaymentCodesList',
+      params: {
+        walletID: wallet.getID(),
+      },
+    });
+
   const exportInternals = async () => {
     if (backdoorPressed < 10) return setBackdoorPressed(backdoorPressed + 1);
     setBackdoorPressed(0);
@@ -281,7 +294,7 @@ const WalletDetails = () => {
         buttonPositive: loc._.ok,
       });
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED || Platform.Version >= 33) {
         console.log('Storage Permission: Granted');
         const filePath = RNFS.DownloadDirectoryPath + `/${fileName}`;
         try {
@@ -336,9 +349,20 @@ const WalletDetails = () => {
 
     for (const transaction of transactions) {
       const value = formatBalanceWithoutSuffix(transaction.value, BitcoinUnit.BTC, true);
-      csvFile +=
-        '\n' +
-        [new Date(transaction.received).toString(), transaction.hash, value, txMetadata[transaction.hash]?.memo?.trim() ?? ''].join(','); // CSV line
+
+      let hash = transaction.hash;
+      let memo = txMetadata[transaction.hash]?.memo?.trim() ?? '';
+
+      if (wallet.chain === Chain.OFFCHAIN) {
+        hash = transaction.payment_hash;
+        memo = transaction.description;
+
+        if (hash?.type === 'Buffer' && hash?.data) {
+          const bb = Buffer.from(hash);
+          hash = bb.toString('hex');
+        }
+      }
+      csvFile += '\n' + [new Date(transaction.received).toString(), hash, value, memo].join(','); // CSV line
     }
 
     await writeFileAndExport(`${wallet.label.replace(' ', '-')}-history.csv`, csvFile);
@@ -421,10 +445,9 @@ const WalletDetails = () => {
                 <>
                   <Text style={[styles.textLabel2, stylesHook.textLabel2]}>{loc.wallets.details_multisig_type}</Text>
                   <BlueText>
-                    {loc.formatString(loc.wallets[`details_ms_${wallet.isNativeSegwit() ? 'ns' : wallet.isWrappedSegwit() ? 'ws' : 'l'}`], {
-                      m: wallet.getM(),
-                      n: wallet.getN(),
-                    })}
+                    {`${wallet.getM()} / ${wallet.getN()} (${
+                      wallet.isNativeSegwit() ? 'native segwit' : wallet.isWrappedSegwit() ? 'wrapped segwit' : 'legacy'
+                    })`}
                   </BlueText>
                 </>
               )}
@@ -454,7 +477,7 @@ const WalletDetails = () => {
                   {loc.transactions.list_title}
                 </Text>
                 <View style={styles.hardware}>
-                  <BlueText>{loc.wallets.details_display}</BlueText>
+                  <BlueText onPress={() => setBackdoorBip47Pressed(prevState => prevState + 1)}>{loc.wallets.details_display}</BlueText>
                   <Switch value={hideTransactionsInWalletsList} onValueChange={setHideTransactionsInWalletsList} />
                 </View>
               </>
@@ -464,6 +487,16 @@ const WalletDetails = () => {
                 </Text>
                 <BlueText>{wallet.getTransactions().length}</BlueText>
               </>
+
+              {backdoorBip47Pressed >= 10 && wallet.allowBIP47() ? (
+                <>
+                  <Text style={[styles.textLabel2, stylesHook.textLabel2]}>{loc.bip47.payment_code}</Text>
+                  <View style={styles.hardware}>
+                    <BlueText>{loc.bip47.purpose}</BlueText>
+                    <Switch value={isBIP47Enabled} onValueChange={setIsBIP47Enabled} />
+                  </View>
+                </>
+              ) : null}
 
               <View>
                 {wallet.type === WatchOnlyWallet.type && wallet.isHd() && (
@@ -500,11 +533,12 @@ const WalletDetails = () => {
             {(wallet instanceof AbstractHDElectrumWallet || (wallet.type === WatchOnlyWallet.type && wallet.isHd())) && (
               <BlueListItem onPress={navigateToAddresses} title={loc.wallets.details_show_addresses} chevron />
             )}
+            {wallet.allowBIP47() && isBIP47Enabled && <BlueListItem onPress={navigateToPaymentCodes} title="Show payment codes" chevron />}
             <BlueCard style={styles.address}>
               <View>
                 <BlueSpacing20 />
                 <SecondButton onPress={navigateToWalletExport} testID="WalletExport" title={loc.wallets.details_export_backup} />
-                {wallet.chain === Chain.ONCHAIN && walletTransactionsLength > 0 && (
+                {walletTransactionsLength > 0 && (
                   <>
                     <BlueSpacing20 />
                     <SecondButton onPress={onExportHistoryPressed} title={loc.wallets.details_export_history} />

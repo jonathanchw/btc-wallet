@@ -21,16 +21,18 @@ const Secret = ({ secret }) => {
   });
 
   const renderSecret = () => {
-    return secret.split(/\s/).map((secret, index) => {
-      const text = `${index + 1}.  ${secret}  `;
-      return (
-        <View style={[styles.word, stylesHook.word]} key={`${index}`}>
+    const component = [];
+    for (const [index, word] of secret.split(/\s/).entries()) {
+      const text = `${index + 1}. ${word}  `;
+      component.push(
+        <View style={[styles.word, stylesHook.word]} key={index}>
           <Text style={[styles.wortText, stylesHook.wortText]} textBreakStrategy="simple">
             {text}
           </Text>
-        </View>
+        </View>,
       );
-    });
+    }
+    return component;
   };
 
   return (
@@ -45,7 +47,6 @@ const Secret = ({ secret }) => {
     </>
   );
 };
-
 
 Secret.propTypes = {
   secret: PropTypes.string.isRequired,

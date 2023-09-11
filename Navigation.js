@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import { useTheme } from '@react-navigation/native';
 
@@ -82,6 +82,9 @@ import LdkViewLogs from './screen/wallets/ldkViewLogs';
 import BackupExplanation from './screen/wallets/dfx/backup-explanation';
 import { BlueStorageContext } from './blue_modules/storage-context';
 import Sell from './screen/dfx/sell';
+import PaymentCode from './screen/wallets/paymentCode';
+import PaymentCodesList from './screen/wallets/paymentCodesList';
+import loc from './loc';
 
 const WalletsStack = createNativeStackNavigator();
 
@@ -472,6 +475,20 @@ const DeeplinkStackRoot = () => {
   );
 };
 
+const PaymentCodeStack = createNativeStackNavigator();
+const PaymentCodeStackRoot = () => {
+  return (
+    <PaymentCodeStack.Navigator name="PaymentCodeRoot" screenOptions={{ headerHideShadow: true }} initialRouteName="PaymentCode">
+      <PaymentCodeStack.Screen name="PaymentCode" component={PaymentCode} options={{ headerTitle: loc.bip47.payment_code }} />
+      <PaymentCodeStack.Screen
+        name="PaymentCodesList"
+        component={PaymentCodesList}
+        options={{ headerTitle: loc.bip47.payment_codes_list }}
+      />
+    </PaymentCodeStack.Navigator>
+  );
+};
+
 const RootStack = createNativeStackNavigator();
 const NavigationDefaultOptions = { headerShown: false, stackPresentation: isDesktop ? 'containedModal' : 'modal' };
 const Navigation = () => {
@@ -514,6 +531,7 @@ const Navigation = () => {
       />
 
       <RootStack.Screen name="DeeplinkRoot" component={DeeplinkStackRoot} options={NavigationDefaultOptions} />
+      <RootStack.Screen name="PaymentCodeRoot" component={PaymentCodeStackRoot} options={NavigationDefaultOptions} />
     </RootStack.Navigator>
   );
 };

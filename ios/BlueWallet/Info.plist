@@ -127,8 +127,6 @@
 	<array>
 		<string>https</string>
 		<string>http</string>
-		<string>bankid</string>
-		<string>swish</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

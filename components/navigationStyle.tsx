@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Image, Keyboard, TouchableOpacity, StyleSheet } from 'react-native';
 import { Theme } from './themes';
+import loc from '../loc';
 
 const styles = StyleSheet.create({
   button: {
@@ -41,6 +41,7 @@ const navigationStyle = (
     ...opts
   }: NavigationOptions & {
     closeButton?: boolean;
+
     closeButtonFunc?: (deps: { navigation: any; route: any }) => React.ReactElement;
   },
   formatter: OptionsFormatter,
@@ -56,7 +57,13 @@ const navigationStyle = (
               navigation.goBack(null);
             };
         headerRight = () => (
-          <TouchableOpacity accessibilityRole="button" style={styles.button} onPress={handleClose} testID="NavigationCloseButton">
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={loc._.close}
+            style={styles.button}
+            onPress={handleClose}
+            testID="NavigationCloseButton"
+          >
             <Image source={theme.closeImage} />
           </TouchableOpacity>
         );
@@ -108,6 +115,7 @@ export const navigationStyleTx = (opts: NavigationOptions, formatter: OptionsFor
         headerLeft: () => (
           <TouchableOpacity
             accessibilityRole="button"
+            accessibilityLabel={loc._.close}
             style={styles.button}
             onPress={() => {
               Keyboard.dismiss();

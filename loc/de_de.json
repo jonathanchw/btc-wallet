@@ -18,7 +18,15 @@
     "wallet_key": "Wallet Schlüssel",
     "invalid_animated_qr_code_fragment": "Ungültig animiertes QR-Code-Fragment. Bitte erneut versuchen.",
     "file_saved": "Die Datei {filePath} wurde im Ordner {destination} gespeichert.",
-    "downloads_folder": "Download-Ordner"
+    "downloads_folder": "Download-Ordner",
+    "close": "Schließen",
+    "change_input_currency": "Eingangswährung ändern",
+    "refresh": "Aktualisieren",
+    "more": "Mehr",
+    "pick_image": "Bild aus Bibliothek wählen",
+    "pick_file": "Datei auswählen",
+    "enter_amount": "Betrag eingeben",
+    "qr_custom_input_button": "10x antippen für individuelle Eingabe"
   },
   "alert": {
     "default": "Warnung"
@@ -56,7 +64,7 @@
     "node_alias": "Knoten-Alias",
     "expiresIn": "Läuft in {time} Minuten ab",
     "payButton": "Zahlen",
-    "placeholder": "Rechnung",
+    "placeholder": "Rechnung oder Adresse",
     "open_channel": "Kanal öffnen",
     "funding_amount_placeholder": "Finanzierungsbetrag, z.B. 0.001",
     "opening_channnel_for_from": "Kanal für Wallet {forWalletLabel} finanziert durch Wallet {fromWalletLabel} eröffnen.",
@@ -235,6 +243,8 @@
     "about_license": "MIT-Lizenz",
     "about_release_notes": "Versionshinweise",
     "about_review": "Bewertung hinterlassen",
+    "performance_score": "Leistungskennzahl: {num}",
+    "run_performance_test": "Leistung testen",
     "about_selftest": "Selbsttest ausführen",
     "about_selftest_electrum_disabled": "Deaktiviere den Electrum Offline-Modus, um den Selbsttest durchführen zu können.",
     "about_selftest_ok": "Alle internen Tests verliefen erfolgreich. Das Wallet funktioniert gut.",
@@ -303,7 +313,7 @@
     "lightning_saved": "Deine Änderungen wurden gespeichert.",
     "lightning_settings": "Lightning-Einstellungen",
     "tor_settings": "Tor Einstellungen",
-    "lightning_settings_explain": "Zur Verbindung mit einem eigenen LND-Knoten LNDHub installieren und dessen URL hier eingeben. Das Feld leer lassen, um den LNDHub (lndhub.io) von DFX Bitcoin Wallet zur verwenden. Nach dem Speichern werden sich neu erstellte Wallets mit dem angegebenen LNDHub verbinden.",
+    "lightning_settings_explain": "Zur Verbindung mit einem eigenen LND-Knoten LNDHub installieren und dessen URL hier eingeben. Bitte beachte, dass nur Wallets, die nach dem Speichern der Änderungen erstellt werden, mit dem angegebenen LNDHub verbunden werden.",
     "network": "Netzwerk",
     "network_broadcast": "Transaktion publizieren",
     "network_electrum": "Electrum Server",
@@ -439,10 +449,10 @@
     "import_passphrase_message": "Wenn genutzt, die Passphrase eingeben",
     "import_error": "Fehler beim Import. Ist die Eingabe korrekt?",
     "import_explanation": "Gib hier die mnemonische Phrase, den privaten Schlüssel, WIF oder was immer du hast ein. DFX Bitcoin Wallet wird bestmöglich das Format interpretieren und die Wallet importieren.",
-    "import_file": "Datei importieren",
     "import_imported": "Importiert",
     "import_scan_qr": "QR-Code scannen oder Datei importieren",
     "import_success": "Wallet wurde erfolgreich importiert.",
+    "import_success_watchonly": "Deine Wallet wurde erfolgreich importiert. WARNUNG: Dies ist eine reine Wallet nur zum Anschauen, du kannst NICHT mit ihr ausgeben.",
     "import_search_accounts": "Konten suchen",
     "import_title": "Importieren",
     "import_discovery_title": "Treffer",
@@ -478,7 +488,6 @@
     "select_no_bitcoin": "Es sind momentan keine Bitcoin Wallets verfügbar.",
     "select_no_bitcoin_exp": "Eine Bitcoin Wallet ist Voraussetzung dafür, um eine Lightning Wallet zu befüllen. Bitte erstelle oder importiere eines.",
     "select_wallet": "Wähle eine Wallet",
-    "take_photo": "Foto aufnehmen",
     "xpub_copiedToClipboard": "In die Zwischenablage kopiert.",
     "pull_to_refresh": "Zum Aktualisieren ziehen",
     "warning_do_not_disclose": "Warnung! Nicht veröffentlichen",
@@ -617,6 +626,13 @@
     "auth_answer": "Erfolgreich authentifiziert bei {hostname}!",
     "could_not_auth": "Authentifizierung bei {hostname} fehlgeschlagen.",
     "authenticate": "Authentifizieren"
+  },
+  "bip47": {
+    "payment_code": "Bezahlcode",
+    "payment_codes_list": "Bezahlcodeliste",
+    "who_can_pay_me": "Wer kann mich bezahlen:",
+    "purpose": "Wiederverwendbarer und teilbarer Code (BIP47)",
+    "not_found": "Bezahlcode nicht gefunden"
   },
   "sell": {
     "header": "Verkauf bestätigen",
