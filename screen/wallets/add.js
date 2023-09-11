@@ -16,7 +16,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlueText, BlueListItem, BlueButton, BlueButtonLink, BlueSpacing20 } from '../../BlueComponents';
 import navigationStyle from '../../components/navigationStyle';
-import { HDSegwitBech32Wallet, SegwitP2SHWallet, HDSegwitP2SHWallet, AppStorage } from '../../class';
+import { HDSegwitBech32Wallet, SegwitP2SHWallet, HDSegwitP2SHWallet } from '../../class';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { useTheme, useNavigation, StackActions } from '@react-navigation/native';
 import { Chain } from '../../models/bitcoinUnits';
@@ -24,7 +24,6 @@ import loc from '../../loc';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
 import alert from '../../components/Alert';
 import Config from 'react-native-config';
-
 const BlueApp = require('../../BlueApp');
 const AppStorage = BlueApp.AppStorage;
 const A = require('../../blue_modules/analytics');

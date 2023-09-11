@@ -40,12 +40,7 @@
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
   
-  
-  /* For debugging purposes since iOS Simulator does not support handoff
-  NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.defichain.app.dfx.bitcoin"];
-  [defaults setValue:@{@"activityType": @"com.defichain.app.dfx.bitcoin.receiveonchain", @"userInfo": @{@"address": @""}} forKey:@"onUserActivityOpen"];
-  */
-  return YES;
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

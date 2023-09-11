@@ -29,17 +29,13 @@ import { FContainer, FButton } from '../../components/FloatButtons';
 import { BlueStorageContext } from '../../blue_modules/storage-context';
 import { isDesktop } from '../../blue_modules/environment';
 import BlueClipboard from '../../blue_modules/clipboard';
-import TransactionsNavigationHeader from '../../components/TransactionsNavigationHeader';
 import { TransactionListItem } from '../../components/TransactionListItem';
 import alert from '../../components/Alert';
-import DfxButton from '../img/dfx/buttons/dfx-services.png';
+import DfxButton from '../../img/dfx/buttons/dfx-services.png';
 import { ImageButton } from '../../components/ImageButton';
 import { useSessionContext } from '../../contexts/session.context';
 import BigNumber from 'bignumber.js';
-import LNNodeBar from '../../components/LNNodeBar';
 import TransactionsNavigationHeader, { actionKeys } from '../../components/TransactionsNavigationHeader';
-import { TransactionListItem } from '../../components/TransactionListItem';
-import alert from '../../components/Alert';
 import PropTypes from 'prop-types';
 
 const fs = require('../../blue_modules/fs');
@@ -51,7 +47,7 @@ const buttonFontSize =
     ? 22
     : PixelRatio.roundToNearestPixel(Dimensions.get('window').width / 26);
 
-const WalletTransactions = () => {
+const WalletTransactions = ({ navigation }) => {
   const { wallets, saveToDisk, setSelectedWallet, refreshAllWalletTransactions, walletTransactionUpdateStatus, isElectrumDisabled } =
     useContext(BlueStorageContext);
   const walletID = useMemo(() => wallets[0]?.getID(), [wallets]);

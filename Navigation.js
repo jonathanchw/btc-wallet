@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useContext } from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import { useTheme } from '@react-navigation/native';
 
