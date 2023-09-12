@@ -279,9 +279,9 @@ PODS:
     - glog
   - react-native-blue-crypto (1.0.0):
     - React
-  - react-native-config (1.4.12):
-    - react-native-config/App (= 1.4.12)
-  - react-native-config/App (1.4.12):
+  - react-native-config (1.5.1):
+    - react-native-config/App (= 1.5.1)
+  - react-native-config/App (1.5.1):
     - React-Core
   - react-native-document-picker (9.0.1):
     - React-Core
@@ -742,7 +742,7 @@ SPEC CHECKSUMS:
   React-jsinspector: b6ed4cb3ffa27a041cd440300503dc512b761450
   React-logger: 186dd536128ae5924bc38ed70932c00aa740cd5b
   react-native-blue-crypto: 23f1558ad3d38d7a2edb7e2f6ed1bc520ed93e56
-  react-native-config: 5e3e0c7798522b1a0d7641f7ffa5363044e16397
+  react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
   react-native-document-picker: 2b8f18667caee73a96708a82b284a4f40b30a156
   react-native-fingerprint-scanner: ac6656f18c8e45a7459302b84da41a44ad96dbbe
   react-native-idle-timer: f7f651542b39dce9b9473e4578cb64a255075f17

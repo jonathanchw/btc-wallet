@@ -1,4 +1,4 @@
-package com.defichain.app.dfx.bitcoin;
+package swiss.dfx.bitcoin;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;

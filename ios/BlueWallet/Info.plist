@@ -4,14 +4,14 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.defichain.app.dfx.bitcoin.fetchTxsForWallet</string>
+		<string>swiss.dfx.bitcoin.fetchTxsForWallet</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Bitcoin</string>
+	<string>BTC Taro</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -178,8 +178,8 @@
 	<string>This alert should not show up as we do not require this data</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>com.defichain.app.dfx.bitcoin.receiveonchain</string>
-		<string>com.defichain.app.dfx.bitcoin.xpub</string>
+		<string>swiss.dfx.bitcoin.receiveonchain</string>
+		<string>swiss.dfx.bitcoin.xpub</string>
 	</array>
 	<key>UIAppFonts</key>
 	<array>
@@ -367,7 +367,7 @@
 	<key>bugsnag</key>
 	<dict>
 		<key>apiKey</key>
-		<string>17ba9059f676f1cc4f45d98182388b01</string>
+		<string>xxx</string>
 	</dict>
 </dict>
 </plist>
