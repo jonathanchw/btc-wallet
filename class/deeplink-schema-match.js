@@ -129,6 +129,7 @@ class DeeplinkSchemaMatch {
           screen: 'SendDetails',
           params: {
             uri: event.url.replace('://', ':'),
+            walletID: context.walletID,
           },
         },
       ]);
@@ -329,6 +330,14 @@ class DeeplinkSchemaMatch {
       (filePath.toLowerCase().startsWith('file:') || filePath.toLowerCase().startsWith('content:')) &&
       filePath.toLowerCase().endsWith('.psbt')
     );
+  }
+
+  static isPossiblyPSBTString(text) {
+    try {
+      return Boolean(bitcoin.Psbt.fromBase64(text))
+    } catch (e) {
+      return false;
+    }
   }
 
   static isBothBitcoinAndLightningOnWalletSelect(wallet, uri) {
