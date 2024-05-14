@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AuthUrl, SignIn, SignMessage } from '../definitions/auth';
+import { AuthUrl, SignIn } from '../definitions/auth';
 import { useApi } from './api.hook';
 
 export interface AuthInterface {
@@ -10,9 +10,10 @@ export interface AuthInterface {
 
 export function useAuth(): AuthInterface {
   const { call } = useApi();
+  const message = 'By_signing_this_message,_you_confirm_that_you_are_the_sole_owner_of_the_provided_Blockchain_address._Your_ID:_';
 
   async function getSignMessage(address: string): Promise<string> {
-    return await call<SignMessage>({ url: `${AuthUrl.signMessage}?address=${address}`, method: 'GET' }).then(result => result.message);
+    return Promise.resolve(`${message}${address}`);
   }
 
   async function signIn(address: string, signature: string): Promise<SignIn> {
