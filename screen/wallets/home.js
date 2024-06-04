@@ -74,6 +74,7 @@ const WalletHome = ({ navigation }) => {
 
   const walletID = useMemo(() => wallets[0]?.getID(), [wallets]);
   const multisigWallet = useMemo(() => wallets.find(w => w.type === MultisigHDWallet.type), [wallets]);
+  const lnWallet = useMemo(() => wallets.find(w => w.type === LightningLdsWallet.type), [wallets]);
   const [isLoading, setIsLoading] = useState(false);
   const { name } = useRoute();
   const { setParams, navigate } = useNavigation();
@@ -128,6 +129,14 @@ const WalletHome = ({ navigation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallets]);
 
+  useEffect(() => {
+    if (!wallets) return;
+    const interval = setInterval(() => {
+      refreshBalances().catch(console.error);
+    }, 20 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   /**
    * Forcefully fetches balance for wallets
    */
@@ -155,19 +164,18 @@ const WalletHome = ({ navigation }) => {
       console.log('saving to disk');
       await saveToDisk();
     }
-
-    wallet.balance = 0;
+    
     await saveToDisk();
-
     setIsLoading(false);
   };
 
   const refreshBalance = async w => {
-    if (!w.getBalance) return false;
-
-    const oldBalance = w.getBalance();
-    await w.fetchBalance();
-    return oldBalance !== w.getBalance();
+    try {
+      if (!w.getBalance) return false;
+      const oldBalance = w.getBalance();
+      await w.fetchBalance();
+      return oldBalance !== w.getBalance();
+    } catch (_) { }
   };
 
   const navigateToSendScreen = () => {
@@ -217,6 +225,15 @@ const WalletHome = ({ navigation }) => {
 
     if (DeeplinkSchemaMatch.isPossiblyPSBTString(value)) {
       importPsbt(value);
+      return;
+    }
+
+    if (DeeplinkSchemaMatch.isBothBitcoinAndLightning(value)) {
+      const uri = DeeplinkSchemaMatch.isBothBitcoinAndLightning(value);
+      const walletSelected = lnWallet || wallet;
+      const route = DeeplinkSchemaMatch.isBothBitcoinAndLightningOnWalletSelect(walletSelected, uri);
+      ReactNativeHapticFeedback.trigger('impactLight', { ignoreAndroidSystemSettings: false });
+      navigate(...route);
       return;
     }
 
@@ -338,6 +355,7 @@ const WalletHome = ({ navigation }) => {
         navigation={navigation}
         wallet={totalWallet}
         width={width}
+        showRBFWarning={!wallet.allowRBF()}
         onWalletChange={total =>
           InteractionManager.runAfterInteractions(async () => {
             wallets.forEach(w => {

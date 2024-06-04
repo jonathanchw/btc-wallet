@@ -149,6 +149,15 @@ const Asset = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    const refreshingInterval = setInterval(() => {
+      refreshTransactions();
+    }, 20 * 1000);
+    return () => {
+      clearInterval(refreshingInterval);
+    };
+  }, []);
+
+  useEffect(() => {
     setOptions({ headerTitle: walletTransactionUpdateStatus === walletID ? loc.transactions.updating : '' });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletTransactionUpdateStatus]);
@@ -384,11 +393,20 @@ const Asset = ({ navigation }) => {
     setIsLoading(true);
     if (DeeplinkSchemaMatch.isPossiblyPSBTString(value)) {
       importPsbt(value);
+    } else if (DeeplinkSchemaMatch.isBothBitcoinAndLightning(value)) {
+      const uri = DeeplinkSchemaMatch.isBothBitcoinAndLightning(value);
+      const route = DeeplinkSchemaMatch.isBothBitcoinAndLightningOnWalletSelect(wallet, uri);
+      ReactNativeHapticFeedback.trigger('impactLight', { ignoreAndroidSystemSettings: false });
+      navigate(...route);
     } else {
-      DeeplinkSchemaMatch.navigationRouteFor({ url: value }, completionValue => {
-        ReactNativeHapticFeedback.trigger('impactLight', { ignoreAndroidSystemSettings: false });
-        navigate(...completionValue);
-      }, { walletID });
+      DeeplinkSchemaMatch.navigationRouteFor(
+        { url: value },
+        completionValue => {
+          ReactNativeHapticFeedback.trigger('impactLight', { ignoreAndroidSystemSettings: false });
+          navigate(...completionValue);
+        },
+        { walletID, wallets },
+      );
     }
     setIsLoading(false);
   };
@@ -576,7 +594,6 @@ const Asset = ({ navigation }) => {
               </Text>
             </ScrollView>
           }
-          {...(isElectrumDisabled ? {} : { refreshing: isLoading, onRefresh: refreshTransactions })}
           data={dataSource}
           extraData={[timeElapsed, dataSource, wallets]}
           keyExtractor={_keyExtractor}
