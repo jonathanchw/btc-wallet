@@ -5,7 +5,7 @@ import { Icon } from 'react-native-elements';
 import { useNavigation, useRoute, useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BlueButton, BlueListItem, BlueSpacing20 } from '../../BlueComponents';
+import { BlueButton, BlueListItem, BlueSpacing20, SecondButton } from '../../BlueComponents';
 import navigationStyle from '../../components/navigationStyle';
 import BottomModal from '../../components/BottomModal';
 import { MultisigHDWallet } from '../../class';
@@ -75,7 +75,8 @@ const WalletsAddMultisig = () => {
     navigate('WalletsAddMultisigStep2', { m, n, format, walletLabel });
     setIsLoading(false);
   };
-
+  const onBack = () => navigate('WalletTransactions');
+  
   const setFormatP2wsh = () => setFormat(MultisigHDWallet.FORMAT_P2WSH);
 
   const setFormatP2shP2wsh = () => setFormat(MultisigHDWallet.FORMAT_P2SH_P2WSH);
@@ -235,6 +236,8 @@ const WalletsAddMultisig = () => {
           onPress={onLetsStartPress}
           isLoading={isLoading}
         />
+        <BlueSpacing20 />
+         <SecondButton title={loc._.cancel} onPress={onBack} />
       </View>
       {renderModal()}
     </SafeAreaView>
@@ -336,7 +339,8 @@ WalletsAddMultisig.getCurrentFormatReadable = f => {
 };
 
 WalletsAddMultisig.navigationOptions = navigationStyle({
-  headerTitle: null,
+  headerTitle: loc.wallets.multi_sig_wallet_label,
+  gestureEnabled: false,
 });
 
 export default WalletsAddMultisig;
